@@ -2,6 +2,7 @@ package Client;
 
 import Dados.*;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.util.InputMismatchException;
@@ -209,19 +210,18 @@ public class ClientMain {
         }else{
             System.out.println("Server IP: "+args[0]+"\nServer TCP port: " + args[1] + "\n");
         }
-        TransferenciaFicheiros transferenciaFicheiros = new TransferenciaFicheiros();
-        ComunicacaoComServidor comunicacaoComServidor = new ComunicacaoComServidor(transferenciaFicheiros);
 
         try{
+            DatagramSocket datagramSocket = new DatagramSocket();
             byte[] data2 = new byte[1024];
             String texto = "Hello from udp client!";
             byte[] data1 = texto.getBytes();
 
             DatagramPacket sendingPacket = new DatagramPacket(data1,data1.length,InetAddress.getByName(args[0]),Integer.parseInt(args[1]));
-            comunicacaoComServidor.datagramSocket.send(sendingPacket);
+            datagramSocket.send(sendingPacket);
 
             DatagramPacket receivingPacket = new DatagramPacket(data2,data2.length);
-            comunicacaoComServidor.datagramSocket.receive(receivingPacket);
+            datagramSocket.receive(receivingPacket);
 
             String receivedData = new String(receivingPacket.getData());
             System.out.println("Recebi: "+receivedData);
@@ -233,16 +233,19 @@ public class ClientMain {
             System.out.println("\nSocket Servidor:");
             System.out.println("IP: "+socketServidor.getLocalAddress());
             System.out.println("PORTA: "+socketServidor.getPort());
-            socketServidor.close();
 
-            comunicacaoComServidor.datagramSocket.close();
+            datagramSocket.close();
+
+            TransferenciaFicheiros transferenciaFicheiros = new TransferenciaFicheiros();
+            ComunicacaoComServidor comunicacaoComServidor = new ComunicacaoComServidor(socketServidor, transferenciaFicheiros);
+
+            ClientMain cliente = new ClientMain(comunicacaoComServidor,transferenciaFicheiros);
+            //cliente.corre();
+            socketServidor.close();
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //Client cliente = new Client(comunicacaoComServidor,transferenciaFicheiros);
-        //cliente.corre();
     }
 }

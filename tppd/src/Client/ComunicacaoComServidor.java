@@ -30,11 +30,13 @@ public class ComunicacaoComServidor extends Observable {
     Database database;
     //List <Observer> l = new ArrayList<>();
 
-    public ComunicacaoComServidor(TransferenciaFicheiros transferenciaFicheiros){
-        //this.socketServidor = socketServidor;
+    public ComunicacaoComServidor(Socket socketServidor, TransferenciaFicheiros transferenciaFicheiros){
         try {
-            datagramSocket = new DatagramSocket();
-        } catch (SocketException e) {
+            oout = new ObjectOutputStream(socketServidor.getOutputStream());
+            System.out.println("debug");
+            ois = new ObjectInputStream(socketServidor.getInputStream());
+            System.out.println("debug");
+        } catch (IOException e) {
             e.printStackTrace();
         }
         //updatedDb = new DatabaseUpdate();
