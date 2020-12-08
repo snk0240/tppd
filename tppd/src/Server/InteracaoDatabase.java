@@ -1,21 +1,7 @@
 package Server;
 
-//import Dados.Utilizador;
-
-import Dados.Ficheiro;
-import Dados.TransferComplete;
-import Dados.Utilizador;
-
-import java.io.ObjectOutputStream;
-import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class InteracaoDatabase {
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";

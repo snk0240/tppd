@@ -1,4 +1,5 @@
 package Client;
+
 import Dados.Request;
 
 public class EnviaFicheiroThread extends Thread {

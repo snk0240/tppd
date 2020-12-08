@@ -4,23 +4,24 @@ import java.io.IOException;
 import java.net.*;
 
 public class ServerComm extends Thread{
-    private final int MAX_CONNECTIONS = 10;
+    final int MAX_CONNECTIONS = 10;
     //private final ServerObservable serverObs;
-    private MulticastSocket multicastSocket = null;
-    private ServerSocket server = null;
-    private Socket nextClient = null;
-    private boolean isAlive;
+    MulticastSocket multicastSocket = null;
+    DatagramSocket datagramSocket = null;
+    ServerSocket server = null;
+    Socket nextClient = null;
+    boolean isAlive;
 
-    private int portUDP;
-    private int portTCP;
-    private String ipDB;
-    private final int portMulticast = 5432;
-    private final int portBDdefault = 3306;
-    private int portDB;
+    int portUDP;
+    int portTCP;
+    String ipDB;
+    final int portMulticast = 5432;
+    final int portBDdefault = 3306;
+    int portDB;
 
-    private InetAddress group;
+    InetAddress group;
 
-    private int nrServersOnline = 0;
+    int nrServersOnline = 0;
 
     public ServerComm(int UDP_port, int TCP_port, String DB_ip) throws UnknownHostException {
         this.portUDP = UDP_port;
@@ -41,7 +42,6 @@ public class ServerComm extends Thread{
 
     @Override
     public void run() {
-
         //verifica se é o primeiro servidor a iniciar, caso seja cria o multicast, caso não seja conecta-se ao existente
         if(multicastSocket == null) {
             try {
@@ -54,6 +54,7 @@ public class ServerComm extends Thread{
 
         try {
             this.server = new ServerSocket(this.portTCP, MAX_CONNECTIONS);
+            datagramSocket = new DatagramSocket(portUDP);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -91,5 +92,9 @@ public class ServerComm extends Thread{
             multicastSocket.close();
 
         System.exit(0);
+    }
+
+    public DatagramSocket getDatagramSocket(){
+        return datagramSocket;
     }
 }

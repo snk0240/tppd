@@ -1,9 +1,9 @@
 package Client;
+
 import Dados.*;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.Socket;
+import java.net.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -13,7 +13,7 @@ public class Client {
     TransferenciaFicheiros transferenciaFicheiros;
     Scanner scanner;
     Login login;
-    Database database = new Database();
+    //Database database = new Database();
 
     public Client(ComunicacaoComServidor comunicacaoComServidor,TransferenciaFicheiros transferenciaFicheiros) {
 
@@ -98,7 +98,7 @@ public class Client {
                     comunicacaoComServidor.getDatabase();
                     break;
                 case 7:
-                    comunicacaoComServidor.mostraDatabase();
+                    //comunicacaoComServidor.mostraDatabase();
                     break;
                 case 8:
                     System.exit(0);
@@ -106,7 +106,6 @@ public class Client {
             }
 
         }while(!sair);
-
     }
     public Msg getmensagem(){
         Msg msg = new Msg();
@@ -149,22 +148,15 @@ public class Client {
         return fr;
     }
     public Utilizador regista(){
-        int portoTCP = 5555, portoUDP = 5555;
-        String password, username, caminhoEnviar, caminhoReceber, nome;
+        int portoTCP = 0, portoUDP = 0;
+        String password, username, nome;
         Utilizador util = new Utilizador();
 
-        password = username = caminhoEnviar = caminhoReceber = nome = null;
+        password = username = nome = null;
         scanner.nextLine();
         try {
-            System.out.println("Insira o porto TCP:\n");
-            portoTCP = scanner.nextInt();
-            if(portoTCP < 1023 || portoTCP > 49152)     // portos válidos
-                portoTCP = 55555;
-
-            System.out.println("Insira o porto UDP:\n");
-            portoUDP = scanner.nextInt();
-            if(portoUDP < 1023 || portoUDP > 49152)     // portos válidos
-                portoUDP = 55555;
+            System.out.println("Insira o nome:\n");
+            nome = scanner.nextLine();
 
             username = scanner.nextLine();
             System.out.println("Insira o username:\n");
@@ -173,16 +165,15 @@ public class Client {
             System.out.println("Insira a password:\n");
             password = scanner.nextLine();
 
-            System.out.println("Insira o caminho para onde enviar:\n");
-            caminhoEnviar = scanner.nextLine();
-            caminhoEnviar = caminhoEnviar.replace("\\","\\\\");
+            do {
+                System.out.println("Insira o porto TCP:\n");
+                portoTCP = scanner.nextInt();
+            }while(portoTCP < 1023 || portoTCP > 49152);
 
-            System.out.println("Insira o caminho para onde receber:\n");
-            caminhoReceber = scanner.nextLine();
-            caminhoReceber = caminhoReceber.replace("\\","\\\\");
-
-            System.out.println("Insira o nome:\n");
-            nome = scanner.nextLine();
+            do {
+                System.out.println("Insira o porto UDP:\n");
+                portoUDP = scanner.nextInt();
+            }while(portoUDP < 1023 || portoUDP > 49152);
 
         } catch (InputMismatchException e){
             System.out.println("Gerou um erro a declarar os portos.");
@@ -194,8 +185,6 @@ public class Client {
         util.setPortoUDP(portoUDP);
         util.setUsername(username);
         util.setPassword(password);
-        util.setCaminhoEnviar(caminhoEnviar);
-        util.setCaminhoReceber(caminhoReceber);
         util.setNome(nome);
 
         //comunicacaoComServidor.getDatabase();
@@ -211,27 +200,49 @@ public class Client {
         return login;
     }
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args){
         Socket socketServidor;
 
         if(args.length != 2){
-            System.out.println("Sintaxe: java Client <IP> <portoTCPServidor>");
+            System.err.println("Sintaxe: java Client <IP_SERVIDOR> <TCP_PORT_SERVIDOR>");
             return;
+        }else{
+            System.out.println("Server IP: "+args[0]+"\nServer TCP port: " + args[1] + "\n");
         }
+        TransferenciaFicheiros transferenciaFicheiros = new TransferenciaFicheiros();
+        ComunicacaoComServidor comunicacaoComServidor = new ComunicacaoComServidor(transferenciaFicheiros);
 
-        try {
+        try{
+            byte[] data2 = new byte[1024];
+            String texto = "Hello from udp client!";
+            byte[] data1 = texto.getBytes();
+
+            DatagramPacket sendingPacket = new DatagramPacket(data1,data1.length,InetAddress.getByName(args[0]),Integer.parseInt(args[1]));
+            comunicacaoComServidor.datagramSocket.send(sendingPacket);
+
+            DatagramPacket receivingPacket = new DatagramPacket(data2,data2.length);
+            comunicacaoComServidor.datagramSocket.receive(receivingPacket);
+
+            String receivedData = new String(receivingPacket.getData());
+            System.out.println("Recebi: "+receivedData);
+
             InetAddress serverAddr = InetAddress.getByName(args[0]);
-            socketServidor = new Socket(serverAddr,Integer.parseInt(args[1]));
+            //System.out.println(Integer.parseInt(receivedData));
+            socketServidor = new Socket(serverAddr,5002);//5002 deveria ser Integer.parseInt(args[1]);
+
+            System.out.println("\nSocket Servidor:");
+            System.out.println("IP: "+socketServidor.getLocalAddress());
+            System.out.println("PORTA: "+socketServidor.getPort());
+            socketServidor.close();
+
+            comunicacaoComServidor.datagramSocket.close();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-            return;
         }
 
-        TransferenciaFicheiros transferenciaFicheiros = new TransferenciaFicheiros();
-        ComunicacaoComServidor comunicacaoComServidor = new ComunicacaoComServidor(socketServidor,transferenciaFicheiros);
-
-        Client cli = new Client(comunicacaoComServidor,transferenciaFicheiros);
-        cli.corre();
+        //Client cliente = new Client(comunicacaoComServidor,transferenciaFicheiros);
+        //cliente.corre();
     }
 }

@@ -1,5 +1,6 @@
 package Client;
 
+import Client.ComunicacaoComServidor;
 import Dados.*;
 
 import java.io.File;

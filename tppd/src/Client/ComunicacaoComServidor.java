@@ -1,7 +1,6 @@
 package Client;
 
 import Dados.*;
-import Dados.Utilizador;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.DatagramSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.*;
 
 // A comunicação com o servidor ao qual o cliente está ligado é por TCP permanente
@@ -19,7 +19,7 @@ public class ComunicacaoComServidor extends Observable {
 
     Socket socketServidor;
     boolean autenticado=false;
-    DatagramSocket socketServidorTemporario;
+    DatagramSocket datagramSocket;
     Utilizador utilizador;
     ServidorThread servidorThread;
     TransfereThread transfereThread;
@@ -30,16 +30,14 @@ public class ComunicacaoComServidor extends Observable {
     Database database;
     //List <Observer> l = new ArrayList<>();
 
-    public ComunicacaoComServidor(Socket socketServidor,TransferenciaFicheiros transferenciaFicheiros){
-        this.socketServidor = socketServidor;
-        updatedDb = new DatabaseUpdate();
+    public ComunicacaoComServidor(TransferenciaFicheiros transferenciaFicheiros){
+        //this.socketServidor = socketServidor;
         try {
-            oout = new ObjectOutputStream(socketServidor.getOutputStream());
-            ois = new ObjectInputStream(socketServidor.getInputStream());
-        } catch (IOException e) {
+            datagramSocket = new DatagramSocket();
+        } catch (SocketException e) {
             e.printStackTrace();
         }
-        //ois = new ObjectInputStream(socketServidor.getInputStream());
+        //updatedDb = new DatabaseUpdate();
         this.transferenciaFicheiros = transferenciaFicheiros;
     }
 
@@ -61,6 +59,9 @@ public class ComunicacaoComServidor extends Observable {
         } catch (IOException | NullPointerException  e) {
             e.printStackTrace();
         }
+    }
+    public DatagramSocket getDatagramSocket(){
+        return datagramSocket;
     }
     public void enviamensagem(Msg msg){
         try {
@@ -143,7 +144,7 @@ public class ComunicacaoComServidor extends Observable {
         setChanged();
         notifyObservers(d);
     }
-    public void mostraDatabase(){
+    /*public void mostraDatabase(){
         for(String user: database.getUsers()){
             System.out.println("user: "+user+"\r");
             for(int i=0;i<database.getUserFile(user).size();i++){
@@ -158,7 +159,7 @@ public class ComunicacaoComServidor extends Observable {
                 System.out.print(database.getUserUploads(user).get(i)+"; ");
             }
         }
-    }
+    }*/
     public void login(Login login)
     {
         Object obj;
