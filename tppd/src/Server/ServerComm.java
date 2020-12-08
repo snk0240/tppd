@@ -1,6 +1,6 @@
 package Server;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.*;
 
 public class ServerComm extends Thread{
@@ -46,7 +46,16 @@ public class ServerComm extends Thread{
         if(multicastSocket == null) {
             try {
                 multicastSocket = new MulticastSocket(this.portMulticast);
-                //multicastSocket.joinGroup(this.group);
+                multicastSocket.joinGroup(InetAddress.getByName("230.0.0.0"));
+                String texto = "Hello from udp multicast!";
+                byte[] data1 = texto.getBytes();
+                DatagramPacket inputPacket = new DatagramPacket(data1, data1.length, InetAddress.getByName("230.0.0.0"), this.portMulticast);
+                //ByteArrayOutputStream buff = new ByteArrayOutputStream();
+                //ObjectOutputStream out = new ObjectOutputStream(buff);
+                //out.writeBytes(texto);
+
+                inputPacket.setData(data1);
+                multicastSocket.send(inputPacket);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -61,7 +70,13 @@ public class ServerComm extends Thread{
 
         while (isAlive) {
             try {
-                this.nextClient = this.server.accept();
+                //this.nextClient = this.server.accept();
+                byte[] data2 = new byte[1024];
+                DatagramPacket receivingPacket = new DatagramPacket(data2,data2.length, InetAddress.getByName("230.0.0.0"), this.portMulticast);
+                multicastSocket.receive(receivingPacket);
+                //ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(receivingPacket.getData()));
+                String receivedData = new String(receivingPacket.getData());
+                System.out.println(receivedData);
             } catch (IOException e) {
                 e.printStackTrace();
             }

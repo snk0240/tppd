@@ -35,7 +35,7 @@ public class ServerMain {
             System.out.println("Welcome to Server, write 'exit' to terminate!\n");
             Scanner scan = new Scanner(System.in);
 //Teste BD
-            try {
+            /*try {
                 String nome;
                 InteracaoDatabase idb = new InteracaoDatabase("localhost:3306");
                 Connection con = idb.getConnection();
@@ -48,7 +48,7 @@ public class ServerMain {
                 }
             } catch (Exception e) {
                 System.out.println("Erro: " + e);
-            }
+            }*/
 //Teste BD
 //Teste conexao cli
             try{

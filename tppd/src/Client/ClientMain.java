@@ -227,8 +227,8 @@ public class ClientMain {
             System.out.println("Recebi: "+receivedData);
 
             InetAddress serverAddr = InetAddress.getByName(args[0]);
-            //System.out.println(Integer.parseInt(receivedData));
-            socketServidor = new Socket(serverAddr,5002);//5002 deveria ser Integer.parseInt(args[1]);
+            int aux = Integer.parseInt(receivedData.trim());
+            socketServidor = new Socket(serverAddr, aux);//5002 deveria ser Integer.parseInt(args[1]);
 
             System.out.println("\nSocket Servidor:");
             System.out.println("IP: "+socketServidor.getLocalAddress());

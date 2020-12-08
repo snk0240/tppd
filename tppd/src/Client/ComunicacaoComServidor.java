@@ -33,9 +33,7 @@ public class ComunicacaoComServidor extends Observable {
     public ComunicacaoComServidor(Socket socketServidor, TransferenciaFicheiros transferenciaFicheiros){
         try {
             oout = new ObjectOutputStream(socketServidor.getOutputStream());
-            System.out.println("debug");
             ois = new ObjectInputStream(socketServidor.getInputStream());
-            System.out.println("debug");
         } catch (IOException e) {
             e.printStackTrace();
         }
