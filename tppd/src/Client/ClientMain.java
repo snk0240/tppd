@@ -7,7 +7,7 @@ import java.net.*;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Client {
+public class ClientMain {
 
     ComunicacaoComServidor comunicacaoComServidor;
     TransferenciaFicheiros transferenciaFicheiros;
@@ -15,7 +15,7 @@ public class Client {
     Login login;
     //Database database = new Database();
 
-    public Client(ComunicacaoComServidor comunicacaoComServidor,TransferenciaFicheiros transferenciaFicheiros) {
+    public ClientMain(ComunicacaoComServidor comunicacaoComServidor, TransferenciaFicheiros transferenciaFicheiros) {
 
         this.comunicacaoComServidor = comunicacaoComServidor;
         this.transferenciaFicheiros = transferenciaFicheiros;
