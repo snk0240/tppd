@@ -1,6 +1,9 @@
 package Server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.*;
 
 public class ServerComm extends Thread{
@@ -11,6 +14,7 @@ public class ServerComm extends Thread{
     ServerSocket server = null;
     Socket nextClient = null;
     boolean isAlive;
+    String response, receivemsg;
 
     int portUDP;
     int portTCP;
@@ -46,37 +50,61 @@ public class ServerComm extends Thread{
         if(multicastSocket == null) {
             try {
                 multicastSocket = new MulticastSocket(this.portMulticast);
-                multicastSocket.joinGroup(InetAddress.getByName("230.0.0.0"));
-                String texto = "Hello from udp multicast!";
-                byte[] data1 = texto.getBytes();
-                DatagramPacket inputPacket = new DatagramPacket(data1, data1.length, InetAddress.getByName("230.0.0.0"), this.portMulticast);
-                //ByteArrayOutputStream buff = new ByteArrayOutputStream();
-                //ObjectOutputStream out = new ObjectOutputStream(buff);
-                //out.writeBytes(texto);
-
-                inputPacket.setData(data1);
-                multicastSocket.send(inputPacket);
+                //multicastSocket.joinGroup(this.group);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
 
         try {
-            this.server = new ServerSocket(this.portTCP, MAX_CONNECTIONS);
             datagramSocket = new DatagramSocket(portUDP);
+            byte[] data1 = new byte[1024];
+
+            DatagramPacket inputPacket = new DatagramPacket(data1, data1.length);
+            System.out.println("Esperando 1 conexao");
+            datagramSocket.receive(inputPacket);
+
+            InetAddress senderAddress = inputPacket.getAddress();
+            int senderPort = inputPacket.getPort();
+
+            byte[] data2 = Integer.toString(portTCP).getBytes();
+            DatagramPacket outputPacket = new DatagramPacket(data2,data2.length,senderAddress,senderPort);
+            datagramSocket.send(outputPacket);
+            System.out.println("Enviei o meu porto TCP!");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        try {
+            server = new ServerSocket(portTCP);
+            System.out.println("Server started");
+            while(true) {
+                nextClient = server.accept();
+
+                BufferedReader bin = new BufferedReader(new InputStreamReader(nextClient.getInputStream()));
+                PrintStream pout = new PrintStream(nextClient.getOutputStream(), true);
+
+                receivemsg = bin.readLine();
+                System.out.println("Received request from " + nextClient.getInetAddress() + ":" + nextClient.getPort());
+
+                response = "FDS DEMOROU MAS FOI";
+                pout.println(response);
+
+                nextClient.close();
+            }
+        } catch (BindException e) {
+            System.err.println("Service already running on port " + portTCP);
+        } catch (IOException e) {
+            System.err.println("I/O error --" + e);
+        } finally {
+            if(server != null) {
+                try { server.close(); } catch (IOException e) { e.printStackTrace(); }
+            }
+        }
+
         while (isAlive) {
             try {
-                //this.nextClient = this.server.accept();
-                byte[] data2 = new byte[1024];
-                DatagramPacket receivingPacket = new DatagramPacket(data2,data2.length, InetAddress.getByName("230.0.0.0"), this.portMulticast);
-                multicastSocket.receive(receivingPacket);
-                //ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(receivingPacket.getData()));
-                String receivedData = new String(receivingPacket.getData());
-                System.out.println(receivedData);
+                this.nextClient = this.server.accept();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -107,9 +135,5 @@ public class ServerComm extends Thread{
             multicastSocket.close();
 
         System.exit(0);
-    }
-
-    public DatagramSocket getDatagramSocket(){
-        return datagramSocket;
     }
 }
