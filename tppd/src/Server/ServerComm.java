@@ -28,46 +28,52 @@ public class ServerComm extends Thread{
 
     String sql1=    "CREATE TABLE teste1.canal ("+
                     "id INT NOT NULL AUTO_INCREMENT,"+
-                    "nome VARCHAR(45) DEFAULT NULL,"+
-                    "descricao VARCHAR(100) DEFAULT NULL,"+
+                    "nome VARCHAR(15) DEFAULT NULL,"+
+                    "descricao VARCHAR(200) DEFAULT NULL,"+
+                    "username VARCHAR(15) DEFAULT NULL,"+
                     "password VARCHAR(15) DEFAULT NULL,"+
-                    "id_user INT DEFAULT NULL,"+
                     "PRIMARY KEY (id))";
 
     String sql2=    "CREATE TABLE teste1.ficheiro ("+
                     "id INT NOT NULL AUTO_INCREMENT,"+
-                    "id_user INT DEFAULT NULL,"+
+                    "username VARCHAR(15) DEFAULT NULL,"+
                     "caminho VARCHAR(200) DEFAULT NULL,"+
+                    "tamanho BIGINT DEFAULT NULL,"+
                     "tipo INT DEFAULT NULL,"+
                     "PRIMARY KEY (id))";
 
     String sql3=    "CREATE TABLE teste1.msg ("+
                     "id INT NOT NULL AUTO_INCREMENT,"+
-                    "id_user INT DEFAULT NULL,"+
                     "texto VARCHAR(1024) DEFAULT NULL,"+
                     "id_chanel INT DEFAULT NULL,"+
                     "id_ficheiro INT DEFAULT NULL,"+
+                    "username VARCHAR(15) DEFAULT NULL,"+
+                    "envia VARCHAR(20) DEFAULT NULL,"+
+                    "recebe VARCHAR(20) DEFAULT NULL,"+
                     "PRIMARY KEY (id))";
 
     String sql4=    "CREATE TABLE teste1.server (" +
                     "id int NOT NULL AUTO_INCREMENT," +
+                    "ip VARCHAR(20) DEFAULT NULL," +
                     "udp_port INT DEFAULT NULL," +
                     "tcp_port INT DEFAULT NULL," +
                     "PRIMARY KEY (id))";
 
     String sql5=    "CREATE TABLE teste1.user (" +
                     "id INT NOT NULL AUTO_INCREMENT," +
-                    "nome VARCHAR(45) DEFAULT NULL," +
+                    "nome VARCHAR(30) DEFAULT NULL," +
                     "username VARCHAR(15) DEFAULT NULL," +
                     "password VARCHAR(15) DEFAULT NULL," +
+                    "ip VARCHAR(20) DEFAULT NULL," +
                     "udp_port INT DEFAULT NULL," +
                     "tcp_port INT DEFAULT NULL," +
                     "ativo TINYINT DEFAULT '0'," +
                     "imagem VARCHAR(150) DEFAULT NULL,"+
                     "PRIMARY KEY (id))";
 
-    String sql6=    "INSERT INTO teste1.user VALUES (1,'andre joao','andre123','andre123',3636,3636,0,NULL)," +
-                    "(2,'andre sousa','andre321','andre321',3737,3737,0,NULL);";
+    String sql6=    "INSERT INTO teste1.user VALUES " +
+                    "(1,'andre joao','andre123','andre123','127.0.0.1',3636,3636,0,NULL)," +
+                    "(2,'andre sousa','andre321','andre321','127.0.0.1',3737,3737,0,NULL);";
 
     InteracaoDatabase idb;
 

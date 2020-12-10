@@ -5,6 +5,7 @@ import java.io.Serializable;
 
 public class TransferComplete implements Serializable {
     private static long serialVersionUID =1L;
+
     private String sender;
     private String receiver;
     private String ficheiro;

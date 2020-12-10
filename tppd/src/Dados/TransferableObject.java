@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class TransferableObject implements Serializable {
     private static long serialVersionUID=1L;
+
     private byte[] bytes =null;
     private String filename;
 

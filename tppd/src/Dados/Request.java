@@ -4,8 +4,8 @@ import java.io.Serializable;
 import java.net.InetAddress;
 
 public class Request implements Serializable {
-
     private static long serialVersionUID=1L;
+
     private InetAddress ip;
     private int porto;
     private String filename;

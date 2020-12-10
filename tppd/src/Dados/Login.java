@@ -3,7 +3,8 @@ package Dados;
 import java.io.Serializable;
 
 public class Login implements Serializable {
-    static final long serialVersionUID=1L;
+    private static long serialVersionUID=1L;
+
     private String username;
     private String password;
 

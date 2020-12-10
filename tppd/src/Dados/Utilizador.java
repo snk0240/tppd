@@ -5,15 +5,16 @@ import java.net.Inet4Address;
 import java.net.UnknownHostException;
 
 public class Utilizador implements Serializable {
-    static final long serialVersionUID = 1L;
+    private static long serialVersionUID = 1L;
+
     private String nome;//nome do utilizador
     private String username;//username do utilizador
     private String password;//password do utilizador
-    private String caminhoReceber;//caminho para onde quer receber o ficheiro
-    private String caminhoEnviar;//caminho para onde quer enviar o ficheiro
     private String ip;//endereço do utilizador em formato String
     private int portoUDP;//porto UDP do utilizador
     private int portoTCP;//porto TCP do utilizador
+    private boolean ativo;//0 inativo, 1 ativo
+    private String imagem;//imagem do utilizador
 
     public Utilizador(){
         try{
@@ -23,12 +24,28 @@ public class Utilizador implements Serializable {
         }
     }
 
-    public void setIp(String ip) {
-        this.ip = ip;
+    public Utilizador(String nome, String user, String pass, String ip, int portoUDP, int portoTCP, boolean ati, String image){
+        this.nome=nome;
+        this.username=user;
+        this.password=pass;
+        this.ip=ip;
+        this.portoUDP=portoUDP;
+        this.portoTCP=portoTCP;
+        this.ativo=ati;
+        this.imagem=image;
     }
-
-    public String getIp(){
-        return ip;
+    @Override
+    public String toString() {
+        return "Utilizador{" +
+                "nome='" + nome + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", ip='" + ip + '\'' +
+                ", portoUDP=" + portoUDP +
+                ", portoTCP=" + portoTCP +
+                ", ativo=" + ativo +
+                ", imagem='" + imagem + '\'' +
+                '}';
     }
 
     public String getNome() {
@@ -39,14 +56,6 @@ public class Utilizador implements Serializable {
         this.nome = nome;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -55,20 +64,20 @@ public class Utilizador implements Serializable {
         this.username = username;
     }
 
-    public String getCaminhoReceber() {
-        return caminhoReceber;
+    public String getPassword() {
+        return password;
     }
 
-    public void setCaminhoReceber(String caminhoReceber) {
-        this.caminhoReceber = caminhoReceber;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getCaminhoEnviar() {
-        return caminhoEnviar;
+    public String getIp() {
+        return ip;
     }
 
-    public void setCaminhoEnviar(String caminhoEnviar) {
-        this.caminhoEnviar = caminhoEnviar;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     public int getPortoUDP() {
@@ -87,7 +96,19 @@ public class Utilizador implements Serializable {
         this.portoTCP = portoTCP;
     }
 
-    public String toQuery(){
-        return "('"+username+"','"+0+"','"+ip+"','"+nome+"','"+password+"','"+caminhoEnviar+"','"+caminhoReceber+"','"+portoTCP+"','"+portoUDP+"','"+1+"')";
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
+    }
+
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
     }
 }
