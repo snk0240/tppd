@@ -17,7 +17,7 @@ public class Ficheiro implements Serializable {
         this.username=user;//username do utilizador que enviou o ficheiro
         this.caminho=caminho;//caminho onde o ficheiro se encontra
         this.tamanho=tam;//tamanho em bytes do ficheiro
-        this.tipo=t;//-1 ficheiro publico, 0 ficheiro para canal, 1 ficheiro para user -> ???
+        this.tipo=t;//-1 ficheiro publico, 0 ficheiro para canal, 1 ficheiro para user -> ????
     }
 
     public String getUsername() {
