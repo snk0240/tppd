@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.*;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class ServerComm extends Thread{
     final int MAX_CONNECTIONS = 10;
@@ -22,6 +25,51 @@ public class ServerComm extends Thread{
     final int portMulticast = 5432;
     final int portBDdefault = 3306;
     int portDB;
+
+    String sql1=    "CREATE TABLE teste1.canal ("+
+                    "id INT NOT NULL AUTO_INCREMENT,"+
+                    "nome VARCHAR(45) DEFAULT NULL,"+
+                    "descricao VARCHAR(100) DEFAULT NULL,"+
+                    "password VARCHAR(15) DEFAULT NULL,"+
+                    "id_user INT DEFAULT NULL,"+
+                    "PRIMARY KEY (id))";
+
+    String sql2=    "CREATE TABLE teste1.ficheiro ("+
+                    "id INT NOT NULL AUTO_INCREMENT,"+
+                    "id_user INT DEFAULT NULL,"+
+                    "caminho VARCHAR(200) DEFAULT NULL,"+
+                    "tipo INT DEFAULT NULL,"+
+                    "PRIMARY KEY (id))";
+
+    String sql3=    "CREATE TABLE teste1.msg ("+
+                    "id INT NOT NULL AUTO_INCREMENT,"+
+                    "id_user INT DEFAULT NULL,"+
+                    "texto VARCHAR(1024) DEFAULT NULL,"+
+                    "id_chanel INT DEFAULT NULL,"+
+                    "id_ficheiro INT DEFAULT NULL,"+
+                    "PRIMARY KEY (id))";
+
+    String sql4=    "CREATE TABLE teste1.server (" +
+                    "id int NOT NULL AUTO_INCREMENT," +
+                    "udp_port INT DEFAULT NULL," +
+                    "tcp_port INT DEFAULT NULL," +
+                    "PRIMARY KEY (id))";
+
+    String sql5=    "CREATE TABLE teste1.user (" +
+                    "id INT NOT NULL AUTO_INCREMENT," +
+                    "nome VARCHAR(45) DEFAULT NULL," +
+                    "username VARCHAR(15) DEFAULT NULL," +
+                    "password VARCHAR(15) DEFAULT NULL," +
+                    "udp_port INT DEFAULT NULL," +
+                    "tcp_port INT DEFAULT NULL," +
+                    "ativo TINYINT DEFAULT '0'," +
+                    "imagem VARCHAR(150) DEFAULT NULL,"+
+                    "PRIMARY KEY (id))";
+
+    String sql6=    "INSERT INTO teste1.user VALUES (1,'andre joao','andre123','andre123',3636,3636,0,NULL)," +
+                    "(2,'andre sousa','andre321','andre321',3737,3737,0,NULL);";
+
+    InteracaoDatabase idb;
 
     InetAddress group;
 
@@ -41,7 +89,7 @@ public class ServerComm extends Thread{
         this.ipDB += ":" + this.portDB;
 
         //server cria a sua bd e conecta-se à mesma
-        InteracaoDatabase idb = new InteracaoDatabase(ipDB);
+        idb = new InteracaoDatabase(ipDB);
     }
 
     @Override
@@ -76,7 +124,7 @@ public class ServerComm extends Thread{
         }
 
         try {
-            server = new ServerSocket(portTCP);
+            server = new ServerSocket(portTCP, MAX_CONNECTIONS);
             System.out.println("Server started");
             while(true) {
                 nextClient = server.accept();
@@ -91,6 +139,21 @@ public class ServerComm extends Thread{
                 pout.println(response);
 
                 nextClient.close();
+
+                try {
+                    System.out.println("Creating Database");
+                    Connection conn = idb.getConnection();
+                    Statement stmt = conn.createStatement();
+                    stmt.executeUpdate(sql1);
+                    stmt.executeUpdate(sql2);
+                    stmt.executeUpdate(sql3);
+                    stmt.executeUpdate(sql4);
+                    stmt.executeUpdate(sql5);
+                    stmt.executeUpdate(sql6);
+                    System.out.println("Database created successfully...");
+                }catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         } catch (BindException e) {
             System.err.println("Service already running on port " + portTCP);
