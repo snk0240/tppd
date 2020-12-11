@@ -33,34 +33,44 @@ public class MulticastHandler extends Thread{
     Object request;
     MsgMulticast msgMulticast;
 
+    boolean isAlive;
+
+    MulticastKeepAlive multicastKeepAlive;
+
     public MulticastHandler(MulticastSocket multicastSocket) {
         this.multicastSocket = multicastSocket;
+        this.multicastKeepAlive = new MulticastKeepAlive(multicastSocket);
+        multicastKeepAlive.start();
+
+        this.isAlive = true;
     }
 
     @Override
     public void run() {
         byte[] data2 = new byte[1024];
         DatagramPacket receivingPacket = new DatagramPacket(data2, data2.length);
-        try {
-            this.multicastSocket.receive(receivingPacket);
 
-            in = new ObjectInputStream(new ByteArrayInputStream(receivingPacket.getData()));
+        while(isAlive) {
+            try {
+                this.multicastSocket.receive(receivingPacket);
 
-            request = (in.readObject());
+                in = new ObjectInputStream(new ByteArrayInputStream(receivingPacket.getData()));
 
-            System.out.println();
-            System.out.print("(" + receivingPacket.getAddress().getHostAddress() + ":" + receivingPacket.getPort() + ") ");
+                request = (in.readObject());
 
-            msgMulticast = (MsgMulticast) request;
+                System.out.println();
+                System.out.print("(" + receivingPacket.getAddress().getHostAddress() + ":" + receivingPacket.getPort() + ") ");
+
+            /*msgMulticast = (MsgMulticast) request;
 
             if (msgMulticast.getTipoMsg().toUpperCase().contains(NEW_USER)) {
-                        /*ByteArrayOutputStream buff = new ByteArrayOutputStream();
+                        *//*ByteArrayOutputStream buff = new ByteArrayOutputStream();
                         out = new ObjectOutputStream(buff);
                         out.writeObject(ipDB);
 
                         receivingPacket.setData(buff.toByteArray()); //Preencher com um write object
 
-                        multicastSocket.send(receivingPacket);*/
+                        multicastSocket.send(receivingPacket);*//*
             }
             else if (msgMulticast.getTipoMsg().toUpperCase().contains(NEW_SERVER)) {
                 //recebe informação de um novo server
@@ -71,11 +81,16 @@ public class MulticastHandler extends Thread{
             else if (msgMulticast.getTipoMsg().toUpperCase().contains("TESTE")) {
                 //shutdown();
             }
+            else */
+                if (request instanceof String) {
+                    System.out.println(request.toString());
+                }
 
-            //Mostra a mensagem recebida bem como a identificacao do emissor
-            System.out.println("Recebido \"" + msgMulticast.getMsg() + "\" de ");
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+                //Mostra a mensagem recebida bem como a identificacao do emissor
+                //System.out.println("Recebido \"" + msgMulticast.getMsg() + "\" de ");
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
