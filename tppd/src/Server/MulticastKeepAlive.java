@@ -39,9 +39,9 @@ public class MulticastKeepAlive extends Thread {
 
                 Thread.sleep(1000);
             } catch (IOException e) {
-                System.out.println("Deu merda nos objects");
+                System.out.println("Erro nos objectos");
             } catch (InterruptedException e) {
-                System.out.println("Deu merda no timeout");
+                System.out.println("Erro no timeout");
             }
         }
     }

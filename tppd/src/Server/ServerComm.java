@@ -51,21 +51,21 @@ public class ServerComm extends Thread {
 
     @Override
     public void run() {
-        UDPClientHandler udp_handler = new UDPClientHandler();
-        udp_handler.start();
 
         try {
             multicastSocket = new MulticastSocket(this.portMulticast);
             multicastSocket.joinGroup(InetAddress.getByName("230.0.0.0"));
             multicastHandler = new MulticastHandler(multicastSocket);
-            multicastHandler.run();
+            multicastHandler.start();
 
             this.server = new ServerSocket(this.portTCP, MAX_CONNECTIONS);
             System.out.println("Server started");
-            datagramSocket = new DatagramSocket(portUDP);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        UDPClientHandler udp_handler = new UDPClientHandler();
+        udp_handler.start();
 
         while (isAlive) {
             try {
