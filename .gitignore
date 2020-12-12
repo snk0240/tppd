@@ -22,3 +22,8 @@ tppd/out/production/tppd/Dados/Database.class
 tppd/out/production/tppd/Dados/Canal.class
 tppd/out/production/tppd/Client/ClientMain.class
 tppd/out/production/tppd/Client/ClienteComm.class
+tppd/out/production/tppd/Client/EnviaFicheiroThread.class
+tppd/out/production/tppd/Client/RecebeFicheiroThread.class
+tppd/out/production/tppd/Client/TransferenciaFicheiros.class
+tppd/out/production/tppd/Client/TransfereThread.class
+tppd/out/production/tppd/Server/ServerComm$UDPClientHandler.class
