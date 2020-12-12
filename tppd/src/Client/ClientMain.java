@@ -1,8 +1,10 @@
 package Client;
 
 import Dados.Login;
+import Dados.Utilizador;
 
 import java.net.*;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class ClientMain {
@@ -27,15 +29,63 @@ public class ClientMain {
         return login;
     }
 
+    public Utilizador regista(){
+        int portoTCP = cli.tcp_port_server;
+        int portoUDP = cli.udp_port_server;
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        String password, username, nome , imagem;
+        Utilizador util = new Utilizador();
+        Scanner scanner = new Scanner(System.in);
+
+        password = username = nome = imagem = null;
+        scanner.nextLine();
+        try {
+            username = scanner.nextLine();
+            System.out.println("Insira o username:\n");
+            username = scanner.nextLine();
+
+            System.out.println("Insira a password:\n");
+            password = scanner.nextLine();
+
+            System.out.println("Insira o nome:\n");
+            nome = scanner.nextLine();
+
+            System.out.println("Insira o caminho da imagem:\n");
+            imagem = scanner.nextLine();
+
+        } catch (InputMismatchException e){
+            System.out.println("Gerou um erro a declarar os portos.");
+        } catch (Exception e){
+            System.out.println("Gerou um erro a declarar qualquer coisa.");
+        }
+
+        util.setPortoTCP(portoTCP);
+        util.setPortoUDP(portoUDP);
+        util.setUsername(username);
+        util.setPassword(password);
+        util.setImagem(imagem);
+        util.setNome(nome);
+        util.setAtivo(true);
+
+        cli.getDatabase();
+        return util;
+    }
+
     public void comeca()
     {
         Scanner scan = new Scanner(System.in);
         int escolha;
         do {
-            System.out.println("Selecione uma das opções:\n1-Login\n2-Registar\n3-Sair");
+            System.out.println("Selecione uma das opções:\n" +
+                    "1-Login\n" +
+                    "2-Registar\n" +
+                    "3-Sair");
             escolha = scan.nextInt();
-            switch (escolha)
-            {
+            switch (escolha) {
                 case 1:
                     /*cli.login(fazlogin());
                     if(cli.autenticado)
@@ -44,11 +94,11 @@ public class ClientMain {
                         System.out.println("Login falhou! Tente outra vez...\n");*/
                         break;
                 case 2:
-                    /*cli.registo(regista());
+                    cli.registo(regista());
                     if(cli.autenticado)
                         System.out.println("Utilizador registado com sucesso!\n");
                     else
-                        //System.out.println("Registo falhou! Tente outra vez...\n");*/
+                        //System.out.println("Registo falhou! Tente outra vez...\n");
                         break;
                 case 3:
                     System.exit(0);
@@ -60,16 +110,20 @@ public class ClientMain {
             }
         }while(/*!cli.autenticado*/escolha!=5);
 
-        String str;
         boolean sair = false;
         do
         {
-            System.out.println("Selecione uma das opções:\n1-Enviar Mensagem\n" +
-                    "2-Listar Utilizadores\n3-Listar Ficheiros\n4-Escolher ficheiro para" +
-                    "download\n5-Atualizar base de dados com nova informação\n6-Obter database\n7-Mostrar Database\n8-sair");
+            System.out.println("Selecione uma das opções:\n" +
+                    "1-Enviar Mensagem\n" +
+                    "2-Listar Utilizadores\n" +
+                    "3-Listar Ficheiros\n" +
+                    "4-Escolher ficheiro para download\n" +
+                    "5-Atualizar base de dados com nova informação\n" +
+                    "6-Obter database\n" +
+                    "7-Mostrar Database\n" +
+                    "8-sair");
             escolha = scan.nextInt();
-            switch(escolha)
-            {
+            switch(escolha) {
                 case 1:
                     //cli.enviamensagem(getmensagem());
                     break;
@@ -95,7 +149,6 @@ public class ClientMain {
                     System.exit(0);
                     break;
             }
-
         }while(!sair);
     }
 
@@ -108,8 +161,8 @@ public class ClientMain {
         TransferenciaFicheiros transferenciaFicheiros = new TransferenciaFicheiros();
         ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]),Integer.parseInt(args[1]),transferenciaFicheiros);
         cli.start();
-        System.out.println("asdasd");
         //COMECA O MENU DO CLIENTE
+        System.out.println("OLA");
         ClientMain cli_main = new ClientMain(cli,transferenciaFicheiros);
         cli_main.comeca();
     }

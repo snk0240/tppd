@@ -1,6 +1,7 @@
 package Client;
 
 import Dados.Login;
+import Dados.Utilizador;
 
 import java.io.*;
 import java.net.*;
@@ -18,6 +19,7 @@ public class ClienteComm extends Thread {
 
     TransferenciaFicheiros transferenciaFicheiros;
     int identificador;
+    boolean autenticado=false;
 
     byte[] data1 = new byte[1024];
     byte[] data2 = new byte[1024];
@@ -81,6 +83,18 @@ public class ClienteComm extends Thread {
             e.printStackTrace();
         }
     }
+    public void registo(Utilizador utilizador){
+        Boolean autenticado = false;
+        try {
+            //oout.reset();
+            oout.writeObject(utilizador);
+            oout.flush();
+            //ois = new ObjectInputStream(socketServidor.getInputStream());
+            //autenticado = ois.readBoolean();
+        } catch (IOException | NullPointerException  e) {
+            e.printStackTrace();
+        }
+    }
 
     public void shutdown() {
         try {
@@ -91,5 +105,14 @@ public class ClienteComm extends Thread {
         }
 
         System.exit(0);
+    }
+
+    public void getDatabase(){
+        try{
+            oout.writeObject("getDatabase");
+            oout.flush();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 }

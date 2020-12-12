@@ -19,17 +19,20 @@ public class TCPClientHandler extends Thread implements Observer {
     private ObjectOutputStream notificationOut;
     private Socket notification;
 
-    public TCPClientHandler(Socket s, ServerObservable serverObs) {
+    private Server servidor;
+    private int tcp_port;
+
+    public TCPClientHandler(Socket s, ServerObservable serverObs, int tcp_port, Server server) {
         this.s = s;
         serverObsClient = serverObs;
         this.isAlive = true;
+        this.servidor = server;
+        this.tcp_port = tcp_port;
     }
 
     @Override
     public void run() {
-        System.out.print("COMECEI THREAD TCP NO SERVER!!");
         Object received;
-
         try {
             out = new ObjectOutputStream(s.getOutputStream());
             in = new ObjectInputStream(s.getInputStream());
@@ -48,9 +51,13 @@ public class TCPClientHandler extends Thread implements Observer {
                 // receive the answer from client
                 received = in.readObject();
 
-                if (received instanceof String) {
-                    //do something
+                if(received instanceof String){
+                    if(received.equals("Data")){
+                        out.writeObject(servidor.getDatabase());
+                        out.flush();
+                    }
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {

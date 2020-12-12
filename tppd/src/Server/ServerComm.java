@@ -25,12 +25,14 @@ public class ServerComm extends Thread {
     int portDB;
     int identificador;
 
-    InteracaoDatabase idb;
+    //InteracaoDatabase idb;
     InetAddress group;
 
     int nrServersOnline = 0;
 
-    public ServerComm(int UDP_port, int TCP_port, String DB_ip) throws UnknownHostException {
+    private Server servidor;
+
+    public ServerComm(int UDP_port, int TCP_port, String DB_ip, Server servidor) throws UnknownHostException {
         serverObs = new ServerObservable();
         this.portUDP = UDP_port;
         this.portTCP = TCP_port;
@@ -42,6 +44,8 @@ public class ServerComm extends Thread {
         //ir incrementando o portDB conforme o número de servers online
         this.portDB = this.portBDdefault + this.nrServersOnline;
         this.ipDB += ":" + this.portDB;
+
+        this.servidor=servidor;
     }
 
     @Override
@@ -64,7 +68,7 @@ public class ServerComm extends Thread {
         while (isAlive) {
             try {
                 nextClient = server.accept();
-                TCPClientHandler t = new TCPClientHandler(nextClient, serverObs);
+                TCPClientHandler t = new TCPClientHandler(nextClient, serverObs, portTCP, servidor);
                 t.start();
             } catch (BindException e) {
                 System.err.println("Service already running on port " + portTCP);
@@ -139,7 +143,7 @@ public class ServerComm extends Thread {
                     String receivedData = new String(inputPacket.getData());
                     System.out.println("Recebi: " + receivedData);
                     identificador = Integer.parseInt(receivedData.trim());
-                    idb = new InteracaoDatabase(ipDB, identificador);
+                    //idb = new InteracaoDatabase(ipDB, identificador);
 
                     InetAddress senderAddress = inputPacket.getAddress();
                     int senderPort = inputPacket.getPort();
