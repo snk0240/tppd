@@ -63,7 +63,8 @@ public class ClienteComm extends Thread {
             in = socket.getInputStream();
             oin = new ObjectInputStream(in);
 
-            oin.readObject()
+            oin.readObject();
+            System.out.prin
 
             out = socket.getOutputStream();
             oout = new ObjectOutputStream(out);
@@ -74,6 +75,8 @@ public class ClienteComm extends Thread {
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
