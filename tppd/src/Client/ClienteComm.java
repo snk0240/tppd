@@ -1,5 +1,7 @@
 package Client;
 
+import Dados.Login;
+
 import java.io.*;
 import java.net.*;
 
@@ -10,9 +12,9 @@ public class ClienteComm extends Thread {
     int tcp_port_server;
     Socket socket;
     DatagramSocket datagramSocket;
-    BufferedReader bin;
-    PrintWriter pout;
-    String response;
+
+    OutputStream out;
+    ObjectOutputStream oout;
 
     TransferenciaFicheiros transferenciaFicheiros;
     int identificador;
@@ -28,7 +30,7 @@ public class ClienteComm extends Thread {
     }
 
     @Override
-    public synchronized void start() {
+    public void start() {
         try {
             datagramSocket = new DatagramSocket();
 
@@ -50,23 +52,32 @@ public class ClienteComm extends Thread {
             e.printStackTrace();
         }
 
-        try (Socket socket = new Socket(ip_server, tcp_port_server)) {
-            OutputStream output = socket.getOutputStream();
-            PrintWriter writer = new PrintWriter(output, true);
-            writer.println("CUCU DO CLIENT");
+        try{
+            Socket socket = new Socket(ip_server, tcp_port_server);
+            System.out.println("Connected!");
 
-            InputStream input = socket.getInputStream();
+            out = socket.getOutputStream();
+            oout = new ObjectOutputStream(out);
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+            String teste = "CONFIRMACAO CLI";
+            oout.writeObject(teste);
 
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void login(Login login)
+    {
+        Object obj;
+        try {
+            //oout.reset();
+            oout.writeObject(login);
+            oout.flush();
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

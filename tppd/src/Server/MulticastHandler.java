@@ -58,8 +58,8 @@ public class MulticastHandler extends Thread{
 
                 request = (in.readObject());
 
-                System.out.println();
-                System.out.print("(" + receivingPacket.getAddress().getHostAddress() + ":" + receivingPacket.getPort() + ") ");
+                //DESCOMENTAR PING//System.out.println();
+                //DESCOMENTAR PING//System.out.print("(" + receivingPacket.getAddress().getHostAddress() + ":" + receivingPacket.getPort() + ") ");
 
             /*msgMulticast = (MsgMulticast) request;
 
@@ -83,7 +83,7 @@ public class MulticastHandler extends Thread{
             }
             else */
                 if (request instanceof String) {
-                    System.out.println(request.toString());
+                    //DESCOMENTAR PING//System.out.println(request.toString());
                 }
 
                 //Mostra a mensagem recebida bem como a identificacao do emissor

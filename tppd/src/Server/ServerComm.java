@@ -16,7 +16,6 @@ public class ServerComm extends Thread {
     ServerSocket server = null;
     Socket nextClient = null;
     private boolean isAlive;
-    String response, receivemsg;
 
     int portUDP;
     int portTCP;
@@ -27,7 +26,6 @@ public class ServerComm extends Thread {
     int identificador;
 
     InteracaoDatabase idb;
-
     InetAddress group;
 
     int nrServersOnline = 0;
@@ -44,14 +42,10 @@ public class ServerComm extends Thread {
         //ir incrementando o portDB conforme o número de servers online
         this.portDB = this.portBDdefault + this.nrServersOnline;
         this.ipDB += ":" + this.portDB;
-
-        //server cria a sua bd e conecta-se à mesma
-        //idb = new InteracaoDatabase(ipDB);
     }
 
     @Override
     public void run() {
-
         try {
             multicastSocket = new MulticastSocket(this.portMulticast);
             multicastSocket.joinGroup(InetAddress.getByName("230.0.0.0"));
@@ -69,26 +63,9 @@ public class ServerComm extends Thread {
 
         while (isAlive) {
             try {
-                // GET THE NEXT TCP CLIENT
                 nextClient = server.accept();
-                System.out.println("Received request from " + nextClient.getInetAddress() + ":" + nextClient.getPort());
-
-                BufferedReader bin = new BufferedReader(new InputStreamReader(nextClient.getInputStream()));
-                PrintStream pout = new PrintStream(nextClient.getOutputStream(), true);
-
-                receivemsg = bin.readLine();
-                System.out.println("Received request from " + nextClient.getInetAddress() + ":" + nextClient.getPort());
-
-                response = "FDS DEMOROU MAS FOI";
-                pout.println(response);
-
-                nextClient.close();
-
-                // create a new thread object
                 TCPClientHandler t = new TCPClientHandler(nextClient, serverObs);
-                // Invoking the start() method
                 t.start();
-
             } catch (BindException e) {
                 System.err.println("Service already running on port " + portTCP);
             } catch (IOException e) {
@@ -162,6 +139,7 @@ public class ServerComm extends Thread {
                     String receivedData = new String(inputPacket.getData());
                     System.out.println("Recebi: " + receivedData);
                     identificador = Integer.parseInt(receivedData.trim());
+                    idb = new InteracaoDatabase(ipDB, identificador);
 
                     InetAddress senderAddress = inputPacket.getAddress();
                     int senderPort = inputPacket.getPort();

@@ -27,6 +27,7 @@ public class TCPClientHandler extends Thread implements Observer {
 
     @Override
     public void run() {
+        System.out.print("COMECEI THREAD TCP NO SERVER!!");
         Object received;
 
         try {
