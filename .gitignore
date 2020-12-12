@@ -27,3 +27,4 @@ tppd/out/production/tppd/Client/RecebeFicheiroThread.class
 tppd/out/production/tppd/Client/TransferenciaFicheiros.class
 tppd/out/production/tppd/Client/TransfereThread.class
 tppd/out/production/tppd/Server/ServerComm$UDPClientHandler.class
+tppd/.idea/misc.xml

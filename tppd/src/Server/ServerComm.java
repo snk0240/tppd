@@ -2,12 +2,12 @@ package Server;
 
 import java.io.*;
 import java.net.*;
-import java.sql.*;
 
 public class ServerComm extends Thread {
     public static final String SERVER_SHUTDOWN = "SERVER SHUTDOWN";
 
     private MulticastHandler multicastHandler;
+    private TCPClientHandler tcpClientHandler;
 
     final int MAX_CONNECTIONS = 10;
     private final ServerObservable serverObs;
@@ -68,8 +68,9 @@ public class ServerComm extends Thread {
         while (isAlive) {
             try {
                 nextClient = server.accept();
-                TCPClientHandler t = new TCPClientHandler(nextClient, serverObs, portTCP, servidor);
-                t.start();
+
+                tcpClientHandler = new TCPClientHandler(nextClient, serverObs);
+                tcpClientHandler.start();
             } catch (BindException e) {
                 System.err.println("Service already running on port " + portTCP);
             } catch (IOException e) {
@@ -93,7 +94,7 @@ public class ServerComm extends Thread {
         }
     }
 
-    public void shutdown() throws IOException {
+    public void shutdown() throws IOException, InterruptedException {
         this.isAlive = false;
 
         MsgMulticast msgMulticast = new MsgMulticast(this.SERVER_SHUTDOWN, "Im out nigga");
@@ -108,6 +109,8 @@ public class ServerComm extends Thread {
 
         //avisar os clientes para terminarem
         //avisar os servidores que vai encerrar
+
+        this.tcpClientHandler.join();
 
         if (this.nextClient != null)
             this.nextClient.close();
