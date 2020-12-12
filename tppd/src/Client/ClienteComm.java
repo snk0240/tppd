@@ -16,6 +16,8 @@ public class ClienteComm extends Thread {
 
     OutputStream out;
     ObjectOutputStream oout;
+    InputStream in;
+    ObjectInputStream oin;
 
     TransferenciaFicheiros transferenciaFicheiros;
     int identificador;
@@ -28,7 +30,7 @@ public class ClienteComm extends Thread {
         ip_server = ip;
         udp_port_server = udp;
         transferenciaFicheiros = transferencia;
-        identificador++;
+        identificador = 1;
     }
 
     @Override
@@ -57,6 +59,11 @@ public class ClienteComm extends Thread {
         try{
             Socket socket = new Socket(ip_server, tcp_port_server);
             System.out.println("Connected!");
+
+            in = socket.getInputStream();
+            oin = new ObjectInputStream(in);
+
+            oin.readObject()
 
             out = socket.getOutputStream();
             oout = new ObjectOutputStream(out);
