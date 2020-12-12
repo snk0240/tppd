@@ -40,7 +40,7 @@ public class ClienteComm extends Thread {
             datagramSocket.receive(receivingPacket);
 
             String receivedData = new String(receivingPacket.getData());
-            System.out.println("Recebi: " + receivedData);
+            System.out.println("Recebi: " + receivedData.trim());
 
             tcp_port_server = Integer.parseInt(receivedData.trim());
             datagramSocket.close();
@@ -50,8 +50,7 @@ public class ClienteComm extends Thread {
             e.printStackTrace();
         }
 
-        try (Socket socket = new Socket("127.0.0.1", 2027)) {
-
+        try (Socket socket = new Socket(ip_server, tcp_port_server)) {
             OutputStream output = socket.getOutputStream();
             PrintWriter writer = new PrintWriter(output, true);
             writer.println("CUCU DO CLIENT");
