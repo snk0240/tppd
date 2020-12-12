@@ -1,9 +1,6 @@
 package Client;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.*;
 
 public class ClienteComm extends Thread {
@@ -17,12 +14,17 @@ public class ClienteComm extends Thread {
     PrintWriter pout;
     String response;
 
+    TransferenciaFicheiros transferenciaFicheiros;
+    int identificador;
+
     byte[] data1 = new byte[1024];
     byte[] data2 = new byte[1024];
 
-    public ClienteComm(InetAddress ip, int udp){
+    public ClienteComm(InetAddress ip, int udp, TransferenciaFicheiros transferencia){
         ip_server = ip;
         udp_port_server = udp;
+        transferenciaFicheiros = transferencia;
+        identificador++;
     }
 
     @Override
@@ -30,6 +32,7 @@ public class ClienteComm extends Thread {
         try {
             datagramSocket = new DatagramSocket();
 
+            byte[] data1 = Integer.toString(identificador).getBytes();
             DatagramPacket sendingPacket = new DatagramPacket(data1, data1.length, ip_server, udp_port_server);
             datagramSocket.send(sendingPacket);
 
@@ -47,22 +50,25 @@ public class ClienteComm extends Thread {
             e.printStackTrace();
         }
 
-        try {
-            socket = new Socket(ip_server, tcp_port_server);
-            System.out.println("Connection established");
-            // SET THE SOCKET OPTION JUST IN CASE SERVER STALLS
-            //socket.setSoTimeout(10*1000); //ms
-            pout = new PrintWriter(socket.getOutputStream(), true);//PrintWriter(new FileOutputStream("ola.txt")); escrevia para um ficheiro//true -> autoflush
-            bin = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        try (Socket socket = new Socket("127.0.0.1", 2027)) {
 
-            pout.println("dar o toque ao server");
-            //pout.flush();
-            response = bin.readLine();
+            OutputStream output = socket.getOutputStream();
+            PrintWriter writer = new PrintWriter(output, true);
+            writer.println("CUCU DO CLIENT");
 
-            System.out.println("Recebido : " + response);
+            InputStream input = socket.getInputStream();
 
-        } catch (IOException e) { //catches also InterruptedIOException
-            System.err.println("Error " + e);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

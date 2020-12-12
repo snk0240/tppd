@@ -9,15 +9,17 @@ public class Ficheiro implements Serializable {
     private String caminho;
     private long tamanho;
     private int tipo;
+    private String nome;
 
     public Ficheiro(){
     }
 
-    public Ficheiro(String user, String caminho, long tam, int t){
+    public Ficheiro(String user, String caminho, long tam, int t, String n){
         this.username=user;//username do utilizador que enviou o ficheiro
         this.caminho=caminho;//caminho onde o ficheiro se encontra
         this.tamanho=tam;//tamanho em bytes do ficheiro
         this.tipo=t;//-1 ficheiro publico, 0 ficheiro para canal, 1 ficheiro para user -> ????
+        this.nome=n;//nome do ficheiro
     }
 
     public String getUsername() {
@@ -50,5 +52,13 @@ public class Ficheiro implements Serializable {
 
     public void setTipo(int tipo) {
         this.tipo = tipo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 }
