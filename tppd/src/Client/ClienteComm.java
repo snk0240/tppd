@@ -64,7 +64,6 @@ public class ClienteComm extends Thread {
             oin = new ObjectInputStream(in);
 
             oin.readObject();
-            System.out.prin
 
             out = socket.getOutputStream();
             oout = new ObjectOutputStream(out);
