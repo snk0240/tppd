@@ -91,21 +91,21 @@ public class TCPClientHandler extends Thread implements Observer {
                     notificationOut.flush();
                 }
             } catch (IOException e) {
-                System.out.println("couldn't send shutdown packet: " + e);
+                System.err.println("Couldn't send shutdown packet: " + e);
             }
         }
 
         try {
             s.close();
         } catch (IOException e) {
-            System.out.println("could not close the socket!");
+            System.err.println("Could not close the socket!");
         }
 
         try {
             if(notification != null)
                 notification.close();
         } catch (IOException e) {
-            System.out.println("could not close the socket!");
+            System.err.println("Could not close the socket!");
         }
     }
 

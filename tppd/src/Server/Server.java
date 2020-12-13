@@ -2,6 +2,7 @@ package Server;
 
 import Dados.*;
 
+import java.net.InetAddress;
 import java.net.Socket;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.Map;
 
 public class Server {
     private InteracaoDatabase db;
+    private String ipDB;
     private int tcp_port;
     private List<String> users;
     private List<Socket> openedSockets;
@@ -25,14 +27,15 @@ public class Server {
         return mapSockets;
     }
 
-    public Server(int id) throws RemoteException {
+    public Server(String ipDB, int id) throws RemoteException {
         tcp_port = id;
+        this.ipDB = ipDB;
         setup();
     }
 
     public void setup() {
         try {
-            db = new InteracaoDatabase("127.0.0.1", tcp_port);
+            db = new InteracaoDatabase(ipDB, tcp_port);
 
             users = new ArrayList<>();
             openedSockets = new ArrayList<>();

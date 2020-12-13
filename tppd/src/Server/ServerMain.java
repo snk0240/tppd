@@ -19,15 +19,12 @@ public class ServerMain {
         }
         Server servidor = null;
         try {
-            servidor = new Server(Integer.parseInt(args[1]));
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-        try {
             portUDP = Integer.parseInt(args[0]);
             portTCP = Integer.parseInt(args[1]);
             ipDB = args[2];
             System.out.println("Server UDP Port is " + portUDP + " and TCP Port: is " + portTCP + ", BD's ip is " + ipDB + "\n");
+
+            servidor = new Server(ipDB, portTCP);
 
             ServerComm s = new ServerComm(portUDP, portTCP, ipDB, servidor);
             s.start();
@@ -51,7 +48,7 @@ public class ServerMain {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
-            System.err.println("Erro ao invocar função shutdown:\t" + e);
+            System.err.println("Error invoking shutdown function:\t" + e);
         }
     }
 }

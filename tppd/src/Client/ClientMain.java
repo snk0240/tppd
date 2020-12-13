@@ -83,7 +83,7 @@ public class ClientMain {
             System.out.println("Selecione uma das opções:\n" +
                     "1-Login\n" +
                     "2-Registar\n" +
-                    "3-Sair\n>");
+                    "3-Sair\n> ");
             escolha = scan.nextInt();
             switch (escolha) {
                 case 1:

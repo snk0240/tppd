@@ -49,8 +49,8 @@ public class TransferenciaFicheiros {
             requestedCanonicalFilePath = new File(path + File.separator + filename).getCanonicalPath();
 
             if (!requestedCanonicalFilePath.startsWith(path.getCanonicalPath() + File.separator)) {
-                System.out.println("Nao e' permitido aceder ao ficheiro " + requestedCanonicalFilePath + "!");
-                System.out.println("A directoria de base nao corresponde a " + path.getCanonicalPath() + "!");
+                System.out.println("Cant acess file " + requestedCanonicalFilePath + "!");
+                System.out.println("Base directory dont correspond to " + path.getCanonicalPath() + "!");
                 return;
             }
 
@@ -63,7 +63,7 @@ public class TransferenciaFicheiros {
 
             //TransferableObject t = new TransferableObject();
             requestedFileInputStream = new FileInputStream(requestedCanonicalFilePath);
-            System.out.println("Ficheiro " + requestedCanonicalFilePath + " aberto para leitura.");
+            System.out.println("File " + requestedCanonicalFilePath + " open for read");
             //byte[] bytes= new byte[MAX_SIZE*10000];
             int pos =0;
             while ((nbytes = requestedFileInputStream.read(fileChunk)) > 0) {
@@ -76,7 +76,7 @@ public class TransferenciaFicheiros {
             //t.setFilename(filename);
             //oout.writeObject(t);
             //oout.flush();
-            System.out.println("Transferencia concluida");
+            System.out.println("Transfer sucssesfull");
             if(requestedFileInputStream != null) {
                 try {
                     requestedFileInputStream.close();
