@@ -12,9 +12,11 @@ public class MulticastKeepAlive extends Thread {
     DatagramPacket packet;
 
     boolean isAlive;
+    private int portTCP;
 
-    public MulticastKeepAlive(MulticastSocket multicastSocket) {
+    public MulticastKeepAlive(MulticastSocket multicastSocket, int portTCP) {
         this.multicastSocket = multicastSocket;
+        this.portTCP = portTCP;
         this.isAlive = true;
     }
 
@@ -31,13 +33,13 @@ public class MulticastKeepAlive extends Thread {
             buff = new ByteArrayOutputStream();
             try {
                 out = new ObjectOutputStream(buff);
-                out.writeObject("im alive bitch");
+                out.writeObject(this.portTCP);
 
                 packet.setData(buff.toByteArray()); //Preencher com um write object
 
                 multicastSocket.send(packet);
 
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (IOException e) {
                 System.out.println("Erro nos objectos");
             } catch (InterruptedException e) {
