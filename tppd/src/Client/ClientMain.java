@@ -16,22 +16,22 @@ public class ClientMain {
     ClientMain(ClienteComm cli, TransferenciaFicheiros transferenciaFicheiros){
         this.cli = cli;
         this.transferenciaFicheiros = transferenciaFicheiros;
-        login = new Login();
+        this.login = new Login();
     }
 
     public Login fazlogin(){
         Scanner scan = new Scanner(System.in);
         scan.nextLine();
         System.out.print("Introduza o seu username: ");
-        login.setUsername(scan.nextLine());
+        this.login.setUsername(scan.nextLine());
         System.out.print("Introduza a sua password: ");
-        login.setPassword(scan.nextLine());
-        return login;
+        this.login.setPassword(scan.nextLine());
+        return this.login;
     }
 
     public Utilizador regista(){
-        int portoTCP = cli.tcp_port_server;
-        int portoUDP = cli.udp_port_server;
+        int portoTCP = this.cli.getTcp_port_server();
+        int portoUDP = this.cli.getUdp_port_server();
         try {
             InetAddress ip = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
@@ -58,9 +58,9 @@ public class ClientMain {
             imagem = scanner.nextLine();
 
         } catch (InputMismatchException e){
-            System.out.println("Some port declaration error.");
+            System.err.println("Some port declaration error.");
         } catch (Exception e){
-            System.out.println("Some declaration error.");
+            System.err.println("Some declaration error.");
         }
 
         util.setPortoTCP(portoTCP);
@@ -71,7 +71,7 @@ public class ClientMain {
         util.setNome(nome);
         util.setAtivo(true);
 
-        cli.getDatabase();
+        this.cli.getDatabase();
         return util;
     }
 
@@ -94,8 +94,8 @@ public class ClientMain {
                         System.out.println("Login falhou! Tente outra vez...\n");*/
                         break;
                 case 2:
-                    cli.registo(regista());
-                    if(cli.autenticado)
+                    this.cli.registo(regista());
+                    if(this.cli.isAutenticado())
                         System.out.println("Utilizador registado com sucesso!\n");
                     else
                         //System.out.println("Registo falhou! Tente outra vez...\n");
@@ -162,7 +162,7 @@ public class ClientMain {
         ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]), Integer.parseInt(args[1]), transferenciaFicheiros);
         cli.start();
         //COMECA O MENU DO CLIENTE
-        ClientMain cli_main = new ClientMain(cli,transferenciaFicheiros);
+        ClientMain cli_main = new ClientMain(cli, transferenciaFicheiros);
         cli_main.comeca();
     }
 }

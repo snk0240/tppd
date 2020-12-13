@@ -28,20 +28,20 @@ public class TCPClientHandler extends Thread implements Observer {
 
     public TCPClientHandler(Socket s, ServerObservable serverObs, int tcp_port, Server server) {
         this.s = s;
-        serverObsClient = serverObs;
+        this.serverObsClient = serverObs;
         this.isAlive = true;
         this.servidor = server;
         this.tcp_port = tcp_port;
         try {
-            out = new ObjectOutputStream(s.getOutputStream());
-            in = new ObjectInputStream(s.getInputStream());
+            this.out = new ObjectOutputStream(s.getOutputStream());
+            this.in = new ObjectInputStream(s.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
-        streams = new Streams();
-        streams.setOin(in);
-        streams.setOout(out);
-        streams.setSocket(s);
+        this.streams = new Streams();
+        this.streams.setOin(this.in);
+        this.streams.setOout(this.out);
+        this.streams.setSocket(this.s);
     }
 
     @Override
@@ -50,19 +50,19 @@ public class TCPClientHandler extends Thread implements Observer {
         Boolean registo;
         String user;
 
-        while (isAlive) {
+        while (this.isAlive) {
             try {
                 // receive the answer from client
-                received = in.readObject();
+                received = this.in.readObject();
 
                 if(received instanceof Utilizador){
-                    registo=servidor.registaUtilizador((Utilizador)received);
+                    registo = this.servidor.registaUtilizador((Utilizador)received);
 
-                    out.writeObject(registo);
-                    out.flush();
-                    if(registo==true){
+                    this.out.writeObject(registo);
+                    this.out.flush();
+                    if(registo == true){
                         user = ((Utilizador) received).getUsername();
-                        servidor.getMapSockets().put(user,streams);
+                        this.servidor.getMapSockets().put(user, this.streams);
                     }
                 }
                 else if(received instanceof String){
@@ -82,13 +82,13 @@ public class TCPClientHandler extends Thread implements Observer {
     }
 
     public void exit() {
-        isAlive = false;
+        this.isAlive = false;
 
-        if(notification != null){
+        if(this.notification != null){
             try {
-                synchronized(notification){
+                synchronized(this.notification){
                     //notificationOut.writeObject(new ServerShutdown());
-                    notificationOut.flush();
+                    this.notificationOut.flush();
                 }
             } catch (IOException e) {
                 System.err.println("Couldn't send shutdown packet: " + e);
@@ -96,29 +96,29 @@ public class TCPClientHandler extends Thread implements Observer {
         }
 
         try {
-            s.close();
+            this.s.close();
         } catch (IOException e) {
             System.err.println("Could not close the socket!");
         }
 
         try {
-            if(notification != null)
-                notification.close();
+            if(this.notification != null)
+                this.notification.close();
         } catch (IOException e) {
             System.err.println("Could not close the socket!");
         }
     }
 
     private synchronized void writeObject(Object obj) throws IOException {
-        out.writeObject(obj);
-        out.flush();
+        this.out.writeObject(obj);
+        this.out.flush();
     }
 
     public void notify(Object arg){
         try{
-            synchronized(notification){
-                notificationOut.writeObject(arg);
-                notificationOut.flush();
+            synchronized(this.notification){
+                this.notificationOut.writeObject(arg);
+                this.notificationOut.flush();
             }
         }catch(IOException e){
         }
@@ -127,9 +127,9 @@ public class TCPClientHandler extends Thread implements Observer {
     @Override
     public void update(Observable o, Object arg) {
         try{
-            synchronized(notification){
-                notificationOut.writeObject(arg);
-                notificationOut.flush();
+            synchronized(this.notification){
+                this.notificationOut.writeObject(arg);
+                this.notificationOut.flush();
             }
         }catch(IOException e){
         }

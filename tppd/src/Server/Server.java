@@ -20,26 +20,26 @@ public class Server {
     private static final int MAX_SIZE = 10000;
 
     public List<Socket> getOpenedSockets() {
-        return openedSockets;
+        return this.openedSockets;
     }
 
     public Map<String, Streams> getMapSockets() {
-        return mapSockets;
+        return this.mapSockets;
     }
 
     public Server(String ipDB, int id) throws RemoteException {
-        tcp_port = id;
+        this.tcp_port = id;
         this.ipDB = ipDB;
         setup();
     }
 
     public void setup() {
         try {
-            db = new InteracaoDatabase(ipDB, tcp_port);
+            this.db = new InteracaoDatabase(this.ipDB, this.tcp_port);
 
-            users = new ArrayList<>();
-            openedSockets = new ArrayList<>();
-            mapSockets = new HashMap<>();
+            this.users = new ArrayList<>();
+            this.openedSockets = new ArrayList<>();
+            this.mapSockets = new HashMap<>();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,20 +48,20 @@ public class Server {
 
     public Boolean registaUtilizador(Utilizador utilizador) {
 
-        if(db.isRegistered(utilizador.getUsername())){
+        if(this.db.isRegistered(utilizador.getUsername())){
             //setChanged();
             //notifyObservers(false);
             return false;
         }
-        db.register(utilizador);
+        this.db.register(utilizador);
 
-        users.add(utilizador.getUsername());
+        this.users.add(utilizador.getUsername());
         return true;
     }
 
     public Database getDatabase(){
         Database database = new Database();
-        database.setUsers(db.getConnectedUsers());
+        database.setUsers(this.db.getConnectedUsers());
         Map<String,List<Ficheiro>> ficheiros = new HashMap<>();
         Map<String,List<Canal>> uploads = new HashMap<>();
         Map<String,List<Msg>> downloads = new HashMap<>();

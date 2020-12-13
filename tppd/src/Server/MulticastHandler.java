@@ -23,24 +23,24 @@ class MsgMulticast implements Serializable {
 }
 
 public class MulticastHandler extends Thread{
-    public static final String NEW_SERVER = "NEW SERVER";
-    public static final String NEW_USER = "NEW USER";
-    public static final String SERVER_SHUTDOWN = "SERVER SHUTDOWN";
+    private static final String NEW_SERVER = "NEW SERVER";
+    private static final String NEW_USER = "NEW USER";
+    private static final String SERVER_SHUTDOWN = "SERVER SHUTDOWN";
 
-    MulticastSocket multicastSocket = null;
-    ObjectInputStream in;
-    ObjectOutputStream out;
-    Object request;
-    MsgMulticast msgMulticast;
+    private MulticastSocket multicastSocket = null;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
+    private Object request;
+    private MsgMulticast msgMulticast;
 
-    boolean isAlive;
+    private boolean isAlive;
 
     MulticastKeepAlive multicastKeepAlive;
 
     public MulticastHandler(MulticastSocket multicastSocket) {
         this.multicastSocket = multicastSocket;
         this.multicastKeepAlive = new MulticastKeepAlive(multicastSocket);
-        multicastKeepAlive.start();
+        this.multicastKeepAlive.start();
 
         this.isAlive = true;
     }
@@ -50,13 +50,13 @@ public class MulticastHandler extends Thread{
         byte[] data2 = new byte[1024];
         DatagramPacket receivingPacket = new DatagramPacket(data2, data2.length);
 
-        while(isAlive) {
+        while(this.isAlive) {
             try {
                 this.multicastSocket.receive(receivingPacket);
 
-                in = new ObjectInputStream(new ByteArrayInputStream(receivingPacket.getData()));
+                this.in = new ObjectInputStream(new ByteArrayInputStream(receivingPacket.getData()));
 
-                request = (in.readObject());
+                this.request = (this.in.readObject());
 
                 //DESCOMENTAR PING//System.out.println();
                 //DESCOMENTAR PING//System.out.print("(" + receivingPacket.getAddress().getHostAddress() + ":" + receivingPacket.getPort() + ") ");
@@ -82,7 +82,7 @@ public class MulticastHandler extends Thread{
                 //shutdown();
             }
             else */
-                if (request instanceof String) {
+                if (this.request instanceof String) {
                     //DESCOMENTAR PING//System.out.println(request.toString());
                 }
 
