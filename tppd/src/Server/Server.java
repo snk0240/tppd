@@ -43,6 +43,19 @@ public class Server {
         }
     }
 
+    public Boolean registaUtilizador(Utilizador utilizador) {
+
+        if(db.isRegistered(utilizador.getUsername())){
+            //setChanged();
+            //notifyObservers(false);
+            return false;
+        }
+        db.register(utilizador);
+
+        users.add(utilizador.getUsername());
+        return true;
+    }
+
     public Database getDatabase(){
         Database database = new Database();
         database.setUsers(db.getConnectedUsers());

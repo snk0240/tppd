@@ -1,6 +1,7 @@
 package Server;
 
 import Dados.Streams;
+import Dados.Utilizador;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -46,13 +47,25 @@ public class TCPClientHandler extends Thread implements Observer {
     @Override
     public void run() {
         Object received;
+        Boolean registo;
+        String user;
 
         while (isAlive) {
             try {
                 // receive the answer from client
                 received = in.readObject();
 
-                if(received instanceof String){
+                if(received instanceof Utilizador){
+                    registo=servidor.registaUtilizador((Utilizador)received);
+
+                    out.writeObject(registo);
+                    out.flush();
+                    if(registo==true){
+                        user = ((Utilizador) received).getUsername();
+                        servidor.getMapSockets().put(user,streams);
+                    }
+                }
+                else if(received instanceof String){
                     if(received.equals("DEMOROU MAS DEU")){
                         System.out.println("DEMOROU MAS FOI");
                     }

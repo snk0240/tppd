@@ -111,4 +111,8 @@ public class Utilizador implements Serializable {
     public void setImagem(String imagem) {
         this.imagem = imagem;
     }
+
+    public String toDB(){
+        return "('"+nome+"','"+"'"+username+"','"+password+"','"+ip+"','"+portoUDP+"','"+portoTCP+"','"+1+"','"+imagem+"')";
+    }
 }

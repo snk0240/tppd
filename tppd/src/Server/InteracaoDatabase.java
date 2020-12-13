@@ -1,6 +1,7 @@
 package Server;
 
 import Dados.Ficheiro;
+import Dados.Utilizador;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -45,6 +46,23 @@ public class InteracaoDatabase {
 
     public Connection getConnection() {
         return connection;
+    }
+
+    public boolean isRegistered(String username){
+        String query = "SELECT * FROM "+DB_NAME+".user;";
+        Statement statement;
+        try {
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            while (rs.next()) {
+                if (rs.getString("username").equals(username)) {
+                    return true;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public boolean createT_Canal(){
@@ -140,8 +158,8 @@ public class InteracaoDatabase {
     public boolean create_Users(){
         try{
             query = "INSERT INTO "+DB_NAME+".user VALUES " +
-                    "(1,'andre joao','andre123','andre123','127.0.0.1',3636,3636,0,NULL)," +
-                    "(2,'andre sousa','andre321','andre321','127.0.0.1',3737,3737,0,NULL);";
+                    "('andre joao','andre123','andre123','127.0.0.1',3636,3636,0,NULL)," +
+                    "('andre sousa','andre321','andre321','127.0.0.1',3737,3737,0,NULL);";
             Statement statement = connection.createStatement();
             statement.executeUpdate(query);
             return true;
@@ -191,6 +209,18 @@ public class InteracaoDatabase {
     public boolean isConnected(String user){
         List<String> users = getConnectedUsers();
         return users.contains(user);
+    }
+
+    public void register(Utilizador utilizador){
+        Statement statement;
+        try{
+            statement = connection.createStatement();
+            String query2 = "INSERT INTO "+DB_NAME+".user(nome,username,password,ip,udp_port,tcp_port,ativo,imagem) value"
+                    + utilizador.toDB();
+            statement.executeUpdate(query2);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public Ficheiro getFileInfo(String nome){
