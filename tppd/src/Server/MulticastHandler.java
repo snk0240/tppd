@@ -101,6 +101,7 @@ public class MulticastHandler extends Thread {
         this.multicastKeepAlive.isAlive = false;
 
         if(this.multicastSocket != null)
+            //ao fechar o multicastsocket vai criar SocketException no entanto é um procedimento necessário para terminar a thread
             this.multicastSocket.close();
 
         if(this.buff != null)

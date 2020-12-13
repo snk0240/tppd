@@ -12,8 +12,7 @@ import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
 
-public class TCPClientHandler extends Thread implements Observer {
-    private final ServerObservable serverObsClient;
+public class TCPClientHandler extends Thread {
     private final Socket s;
 
     private boolean isAlive;
@@ -28,9 +27,8 @@ public class TCPClientHandler extends Thread implements Observer {
     private int tcp_port;
     private Streams streams;
 
-    public TCPClientHandler(Socket s, ServerObservable serverObs, int tcp_port, Server server) {
+    public TCPClientHandler(Socket s, int tcp_port, Server server) {
         this.s = s;
-        this.serverObsClient = serverObs;
         this.isAlive = true;
         this.servidor = server;
         this.tcp_port = tcp_port;
@@ -139,17 +137,6 @@ public class TCPClientHandler extends Thread implements Observer {
     }
 
     public void notify(Object arg){
-        try{
-            synchronized(this.notification){
-                this.notificationOut.writeObject(arg);
-                this.notificationOut.flush();
-            }
-        }catch(IOException e){
-        }
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
         try{
             synchronized(this.notification){
                 this.notificationOut.writeObject(arg);
