@@ -26,15 +26,15 @@ public class InteracaoDatabase {
         this.DB_NAME = "tppd" + portTCP;
         try {
             Class.forName(this.JDBC_DRIVER);
-            this.connection = DriverManager.getConnection("jdbc:mysql://" + ip + this.TIMEZONE, this.DB_USER, this.DB_PASS);
+            this.connection = DriverManager.getConnection("jdbc:mysql://" + ip + TIMEZONE, DB_USER, DB_PASS);
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate("CREATE DATABASE IF NOT EXISTS " + this.DB_NAME);
-            System.out.println("Base de Dados do Servidor Criada...");
+            System.out.println("Server Database Created...");
             createT_MSG();
             createT_Ficheiro();
             createT_Canal();
             createT_User();
-            System.out.println("Tabelas Criadas...");
+            System.out.println("Tables Created...");
         } catch (Exception e) {
             e.printStackTrace();
         }

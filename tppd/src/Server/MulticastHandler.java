@@ -3,6 +3,7 @@ package Server;
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.util.ArrayList;
 
 class MsgMulticast implements Serializable {
     protected String tipoMsg;
@@ -22,7 +23,7 @@ class MsgMulticast implements Serializable {
     }
 }
 
-public class MulticastHandler extends Thread{
+public class MulticastHandler extends Thread {
     private static final String NEW_SERVER = "NEW SERVER";
     private static final String NEW_USER = "NEW USER";
     private static final String SERVER_SHUTDOWN = "SERVER SHUTDOWN";
@@ -34,15 +35,25 @@ public class MulticastHandler extends Thread{
     private MsgMulticast msgMulticast;
 
     private boolean isAlive;
+    private ArrayList<Integer> oldList;
+    private ArrayList<Integer> newList;
 
-    MulticastKeepAlive multicastKeepAlive;
+    private MulticastKeepAlive multicastKeepAlive;
+    private VerifyAliveList verifyAliveList;
 
-    public MulticastHandler(MulticastSocket multicastSocket) {
+    public MulticastHandler(MulticastSocket multicastSocket, int portTCP) {
         this.multicastSocket = multicastSocket;
-        this.multicastKeepAlive = new MulticastKeepAlive(multicastSocket);
+        this.isAlive = true;
+        this.newList = new ArrayList<>();
+        this.oldList = new ArrayList<>();
+        this.newList.add(portTCP);
+        this.oldList.add(portTCP);
+
+        this.multicastKeepAlive = new MulticastKeepAlive(this.multicastSocket, portTCP);
         this.multicastKeepAlive.start();
 
-        this.isAlive = true;
+        this.verifyAliveList = new VerifyAliveList();
+        this.verifyAliveList.start();
     }
 
     @Override
@@ -50,7 +61,7 @@ public class MulticastHandler extends Thread{
         byte[] data2 = new byte[1024];
         DatagramPacket receivingPacket = new DatagramPacket(data2, data2.length);
 
-        while(this.isAlive) {
+        while (this.isAlive) {
             try {
                 this.multicastSocket.receive(receivingPacket);
 
@@ -82,14 +93,66 @@ public class MulticastHandler extends Thread{
                 //shutdown();
             }
             else */
-                if (this.request instanceof String) {
-                    //DESCOMENTAR PING//System.out.println(request.toString());
+                if (this.request instanceof Integer) {
+                    boolean aux = false;
+                    if (newList.contains(this.request)) {
+                        aux = true;
+                    }
+                    if (!aux) {
+                        String s = this.request.toString();
+                        newList.add(Integer.parseInt(s));
+                    }
                 }
 
                 //Mostra a mensagem recebida bem como a identificacao do emissor
                 //System.out.println("Recebido \"" + msgMulticast.getMsg() + "\" de ");
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public class VerifyAliveList extends Thread {
+
+        public VerifyAliveList() {
+        }
+
+        @Override
+        public void run() {
+
+            while (isAlive) {
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if (newList != oldList) {
+                    for (int i = 0; i < newList.size(); i++) {
+                        if(oldList.contains(newList.get(i))) {
+                            continue;
+                        }
+                        else {
+                            //System.out.println("New server joined with port TCP: " + newList.get(i));
+                            oldList.add(newList.get(i));
+                            //do something with this information
+                        }
+                    }
+
+                    for(int i = 0; i < oldList.size(); i++) {
+                        if(newList.contains(oldList.get(i))) {
+                            continue;
+                        }
+                        else {
+                            //System.out.println("Server with port TCP: " + oldList.get(i) + " terminated");
+                            //do something with this information
+                        }
+                    }
+
+                    oldList = newList;
+                    newList = new ArrayList<>();
+                }
             }
         }
     }
