@@ -2,9 +2,15 @@ package Server;
 
 import Dados.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -57,6 +63,77 @@ public class Server {
 
         this.users.add(utilizador.getUsername());
         return true;
+    }
+
+
+
+    public Utilizador ExecutaLogin(Login login, String ip){
+        if(db.isConnected(login.getUsername())){
+            return null;
+        }
+        Utilizador utilizador = db.login(login.getUsername(),login.getPassword(),ip);
+        int found=0;
+        if(utilizador!=null){
+            System.out.println("Utilizador ligado");
+            for(String user: users){
+                if(user.equals(login.getUsername())){
+                    found=1;
+                }
+            }
+            if(found==0) {
+                users.add(login.getUsername());
+                return utilizador;
+            }
+        }
+        return null;
+    }
+
+    public Boolean ForwardMensagem(Msg msg){
+        Socket source,dest;
+        if(users.contains(msg.getRecebe())){ // verifica se está no servidor
+            dest = mapSockets.get(msg.getRecebe()).getSocket();
+            try {
+                ObjectOutputStream oout = mapSockets.get(msg.getRecebe()).getOout();
+                oout.writeObject(msg);
+                oout.flush();
+                return true;
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+        else{
+            if(db.isConnected(msg.getRecebe())){
+                try {
+                    ByteArrayOutputStream bout = new ByteArrayOutputStream();
+                    ObjectOutputStream out = new ObjectOutputStream(bout);
+                    DatagramSocket ds = new DatagramSocket(db.selectPortoUdp(msg.getRecebe()));
+                    String mensagem = msg.getEnvia() + msg.getTexto();
+                    out.writeObject(mensagem);
+                    out.flush();
+                    DatagramPacket packet = new DatagramPacket(bout.toByteArray(), bout.size(),db.selectIp(msg.getRecebe()),db.selectPortoUdp(msg.getRecebe()));
+                    ds.send(packet);
+
+                    packet = new DatagramPacket(new byte[MAX_SIZE], MAX_SIZE);
+                    ds.receive(packet);
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                return true;
+            }
+            else{
+                try { // avisa quem quer enviar a msg q o utilizador destino n esta ligado
+                    /*ObjectOutputStream oout = new ObjectOutputStream(source.getOutputStream());
+                    oout.writeObject("Utilizador destino n esstá ligado");
+                    oout.flush();*/
+                    return false;
+                    //only return false
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return false;
     }
 
     public Database getDatabase(){

@@ -1,5 +1,7 @@
 package Server;
 
+import Dados.Login;
+import Dados.Msg;
 import Dados.Streams;
 import Dados.Utilizador;
 
@@ -25,7 +27,6 @@ public class TCPClientHandler extends Thread implements Observer {
     private Server servidor;
     private int tcp_port;
     private Streams streams;
-    private int contador;
 
     public TCPClientHandler(Socket s, ServerObservable serverObs, int tcp_port, Server server) {
         this.s = s;
@@ -43,14 +44,14 @@ public class TCPClientHandler extends Thread implements Observer {
         this.streams.setOin(this.in);
         this.streams.setOout(this.out);
         this.streams.setSocket(this.s);
-        this.contador++;
     }
 
     @Override
     public void run() {
         Object received;
-        Boolean registo;
+        Boolean registo, mensagem;
         String user;
+        Utilizador login;
 
         while (this.isAlive) {
             try {
@@ -67,23 +68,37 @@ public class TCPClientHandler extends Thread implements Observer {
                         this.servidor.getMapSockets().put(user, this.streams);
                     }
                 }
-                else if(received instanceof String){
-                    if(received.equals("DEMOROU MAS DEU")){
-                        System.out.println("DEMOROU MAS FOI");
+                else if(received instanceof Login){
+                    String ip=s.getInetAddress().getHostAddress();
+                    login=servidor.ExecutaLogin((Login)received,ip);
+
+                    out.writeObject((Utilizador)login);
+                    out.flush();
+                    if(login!=null){
+                        user = ((Utilizador) login).getUsername();
+                        servidor.getMapSockets().put(user,streams);
                     }
+                }
+                else if(received instanceof Msg){
+                    Msg msg = (Msg)received;
+                    System.out.println("recebi msg: "+msg.getTexto()+" "+msg.getEnvia()+" "+msg.getRecebe());
+                    /*if(msg.getRecebe()==null){
+                        server.ClientDisconnected(msg.getEnvia());
+                    }
+                    else {*/
+                        System.out.println("A encaminhar msg");
+                        //dbServer.BroadcastMensagem(msg);
+                        mensagem = servidor.ForwardMensagem(msg);
+                        out.writeObject(mensagem);
+                        out.flush();
+                    //}
                 }
                 else {
                 }
             }catch(Exception e){
                 System.out.println(e);
             }
-            try{
-                out.reset();
-            }catch(Exception e){
-                e.printStackTrace();
-            }
         }
-
         this.exit();
     }
 

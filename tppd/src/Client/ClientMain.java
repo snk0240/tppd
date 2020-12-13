@@ -1,6 +1,7 @@
 package Client;
 
 import Dados.Login;
+import Dados.Msg;
 import Dados.Utilizador;
 
 import java.net.*;
@@ -17,6 +18,27 @@ public class ClientMain {
         this.cli = cli;
         this.transferenciaFicheiros = transferenciaFicheiros;
         this.login = new Login();
+    }
+
+    public Msg getmensagem(){
+        Scanner scanner = new Scanner(System.in);
+        Msg msg = new Msg();
+        String destino,mensagem;
+
+        msg.setEnvia(cli.utilizador.getUsername());
+        try {
+            System.out.println("Indique o utilizador para o qual quer enviar mensagem:\n");
+            destino = scanner.nextLine();
+            System.out.println("Escreva a mensagem:\n");
+            mensagem= scanner.nextLine();
+            msg.setRecebe(destino);
+            msg.setTexto(mensagem);
+        } catch (InputMismatchException e){
+            System.out.println("Gerou um erro a declarar os portos.");
+        } catch (Exception e){
+            System.out.println("Gerou um erro a declarar qualquer coisa.");
+        }
+        return msg;
     }
 
     public Login fazlogin(){
@@ -77,21 +99,21 @@ public class ClientMain {
 
     public void comeca()
     {
-        Scanner scan = new Scanner(System.in);
+        Scanner scan1 = new Scanner(System.in);
         int escolha;
         do {
             System.out.println("Selecione uma das opções:\n" +
                     "1-Login\n" +
                     "2-Registar\n" +
                     "3-Sair\n> ");
-            escolha = scan.nextInt();
+            escolha = scan1.nextInt();
             switch (escolha) {
                 case 1:
-                    /*cli.login(fazlogin());
+                    this.cli.login(fazlogin());
                     if(cli.autenticado)
                         System.out.println("Utilizador autenticado com sucesso!\n");
                     else
-                        System.out.println("Login falhou! Tente outra vez...\n");*/
+                        System.out.println("Login falhou! Tente outra vez...\n");
                         break;
                 case 2:
                     this.cli.registo(regista());
@@ -108,11 +130,12 @@ public class ClientMain {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }while(/*!cli.autenticado*/escolha!=5);
+        }while(!cli.autenticado);
 
         boolean sair = false;
         do
         {
+            Scanner scan2 = new Scanner(System.in);
             System.out.println("Selecione uma das opções:\n" +
                     "1-Enviar Mensagem\n" +
                     "2-Listar Utilizadores\n" +
@@ -122,10 +145,10 @@ public class ClientMain {
                     "6-Obter database\n" +
                     "7-Mostrar Database\n" +
                     "8-sair");
-            escolha = scan.nextInt();
+            escolha = scan2.nextInt();
             switch(escolha) {
                 case 1:
-                    //cli.enviamensagem(getmensagem());
+                    cli.enviamensagem(getmensagem());
                     break;
                 case 2:
                     //cli.listautilizadores();
@@ -143,7 +166,7 @@ public class ClientMain {
                     //cli.getDatabase();
                     break;
                 case 7:
-                    //cli.mostraDatabase();
+                    cli.mostraDatabase();
                     break;
                 case 8:
                     System.exit(0);

@@ -12,7 +12,7 @@ public class Database implements Serializable {
     private Map<String,List<Ficheiro>> ficheiros;
 
     public Database(){
-        users = new ArrayList<>();
+        this.users = new ArrayList<>();
         this.canais = new HashMap<>();
         this.msgs = new HashMap<>();
         this.ficheiros = new HashMap<>();
@@ -48,6 +48,33 @@ public class Database implements Serializable {
 
     public void setFicheiros(Map<String, List<Ficheiro>> ficheiros) {
         this.ficheiros = ficheiros;
+    }
+
+    public List<Ficheiro> getUserFi(String user){
+        if(users.contains(user)){
+            return null;
+        }
+        else{
+            return ficheiros.get(user);
+        }
+    }
+
+    public List<Canal> getUserCanal(String user){
+        if(user.contains(user)){
+            return null;
+        }
+        else{
+            return canais.get(user);
+        }
+    }
+
+    public List<Msg> getUserMsg(String user){
+        if(users.contains(user)){
+            return null;
+        }
+        else{
+            return msgs.get(user);
+        }
     }
 }
 

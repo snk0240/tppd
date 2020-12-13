@@ -3,6 +3,7 @@ package Server;
 import Dados.Ficheiro;
 import Dados.Utilizador;
 
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -116,23 +117,6 @@ public class InteracaoDatabase {
         return false;
     }
 
-    public boolean createT_Server() {
-        try {
-            this.query = "CREATE TABLE IF NOT EXISTS " + this.DB_NAME + ".server (" +
-                    "id int NOT NULL AUTO_INCREMENT," +
-                    "ip VARCHAR(20) DEFAULT NULL," +
-                    "udp_port INT DEFAULT NULL," +
-                    "tcp_port INT DEFAULT NULL," +
-                    "PRIMARY KEY (id))";
-            this.statement = this.connection.createStatement();
-            this.statement.executeUpdate(this.query);
-            return true;
-        } catch (Exception e) {
-            System.err.println(e);
-        }
-        return false;
-    }
-
     public boolean createT_User() {
         try {
             this.query = "CREATE TABLE IF NOT EXISTS " + this.DB_NAME + ".user (" +
@@ -207,6 +191,21 @@ public class InteracaoDatabase {
         }
     }
 
+    public int selectPortoUdp(String username){
+        String query = "select portoudp from "+DB_NAME+".user where username ='"+username+"'";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            while(rs.next()){
+                int porto = rs.getInt("udp_port");
+                return porto;
+            }
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        return 0;
+    }
+
     public Ficheiro getFileInfo(String nome) {
         this.query = "select * from mydb.ficheiro where nome ='" + nome + "'";
         List<String> downloads = new ArrayList<>();
@@ -224,4 +223,56 @@ public class InteracaoDatabase {
         }
         return null;
     }
+
+    public Utilizador login(String username, String password,String ip){
+        String query = "SELECT * FROM "+this.DB_NAME+".user;";
+        Statement statement;
+        Utilizador utilizador=new Utilizador();
+        try {
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            while (rs.next()) {
+                String name,pass;
+                pass =rs.getString("password");
+                name =rs.getString("username");
+                if (name.equals(username) && pass.equals(password)) {
+                    String query2 = "update "+this.DB_NAME+".user set ligado ="+1+" where username = '"+username+"'";
+                    Statement stmt = connection.createStatement();
+                    stmt.executeUpdate(query2);
+                    String query3 = "update "+this.DB_NAME+".user set ip='"+ip+"' where username = '"+username+"'";
+                    Statement stmt2 = connection.createStatement();
+                    stmt2.executeUpdate(query3);
+
+                    utilizador.setPortoUDP(rs.getInt("portoudp"));
+                    utilizador.setPortoTCP(rs.getInt("portotcp"));
+                    utilizador.setUsername(name);
+                    utilizador.setPassword(pass);
+                    utilizador.setNome(rs.getString("nome"));
+                    utilizador.setIp(ip);
+
+                    return utilizador;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
+    public InetAddress selectIp(String username){
+        String query = "select ip from "+DB_NAME+".user where username ='"+username+"'";
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            while(rs.next()){
+                InetAddress ip = InetAddress.getByName(rs.getString("ip"));
+                return ip;
+            }
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        return null;
+    }
+
 }

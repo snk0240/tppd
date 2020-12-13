@@ -1,6 +1,8 @@
 package Client;
 
+import Dados.Database;
 import Dados.Login;
+import Dados.Msg;
 import Dados.Utilizador;
 
 import java.io.*;
@@ -18,7 +20,9 @@ public class ClienteComm extends Thread {
     private ObjectOutputStream oout;
 
     private TransferenciaFicheiros transferenciaFicheiros;
-    private boolean autenticado = false;
+    boolean autenticado = false;
+    private Database database;
+    Utilizador utilizador;
 
     byte[] data1 = new byte[1024];
     byte[] data2 = new byte[1024];
@@ -83,8 +87,46 @@ public class ClienteComm extends Thread {
             this.oout.writeObject(utilizador);
             this.oout.flush();
             this.autenticado = (Boolean)oin.readObject();
+            if(this.autenticado == true) this.utilizador = utilizador;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void enviamensagem(Msg msg){
+        try {
+            this.oout.reset();
+            this.oout.writeObject(msg);
+            this.oout.flush();
+
+        } catch (IOException | NullPointerException  e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getDatabase(){
+        try{
+            this.oout.writeObject("getDatabase");
+            this.oout.flush();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void mostraDatabase(){
+        for(String user: database.getUsers()){
+            System.out.println("user: "+user+"\r");
+            for(int i=0;i<database.getUserCanal(user).size();i++){
+                System.out.print(database.getUserCanal(user).get(i)+"; ");
+            }
+            System.out.println("donwloads: \r");
+            for(int i=0;i<database.getUserFi(user).size();i++){
+                System.out.print(database.getUserFi(user).get(i)+"; ");
+            }
+            System.out.println("uploads: \r");
+            for(int i=0;i<database.getUserMsg(user).size();i++){
+                System.out.print(database.getUserMsg(user).get(i)+"; ");
+            }
         }
     }
 
@@ -97,15 +139,6 @@ public class ClienteComm extends Thread {
         }
 
         System.exit(0);
-    }
-
-    public void getDatabase(){
-        try{
-            this.oout.writeObject("getDatabase");
-            this.oout.flush();
-        }catch(Exception e){
-            e.printStackTrace();
-        }
     }
 
     public int getUdp_port_server() {

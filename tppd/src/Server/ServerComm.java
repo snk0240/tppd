@@ -1,5 +1,7 @@
 package Server;
 
+import Dados.Utilizador;
+
 import java.io.*;
 import java.net.*;
 
@@ -104,10 +106,6 @@ public class ServerComm extends Thread {
             this.multicastSocket.close();
 
         System.exit(0);
-    }
-
-    public DatagramSocket getDatagramSocket() {
-        return datagramSocket;
     }
 
     public class UDPClientHandler extends Thread {
