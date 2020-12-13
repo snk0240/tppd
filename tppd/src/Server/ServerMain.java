@@ -2,6 +2,7 @@ package Server;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class ServerMain {
@@ -50,6 +51,8 @@ public class ServerMain {
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.err.println("Error invoking shutdown function:\t" + e);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 }

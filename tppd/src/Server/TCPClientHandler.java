@@ -25,7 +25,6 @@ public class TCPClientHandler extends Thread implements Observer {
     private Server servidor;
     private int tcp_port;
     private Streams streams;
-    private int contador;
 
     public TCPClientHandler(Socket s, ServerObservable serverObs, int tcp_port, Server server) {
         this.s = s;
@@ -43,7 +42,6 @@ public class TCPClientHandler extends Thread implements Observer {
         this.streams.setOin(this.in);
         this.streams.setOout(this.out);
         this.streams.setSocket(this.s);
-        this.contador++;
     }
 
     @Override
@@ -83,14 +81,12 @@ public class TCPClientHandler extends Thread implements Observer {
                 e.printStackTrace();
             }
         }
-
-        this.exit();
     }
 
-    public void exit() {
+    public void shutdown() {
         this.isAlive = false;
 
-        if(this.notification != null){
+        /*if(this.notification != null){
             try {
                 synchronized(this.notification){
                     //notificationOut.writeObject(new ServerShutdown());
@@ -99,20 +95,22 @@ public class TCPClientHandler extends Thread implements Observer {
             } catch (IOException e) {
                 System.err.println("Couldn't send shutdown packet: " + e);
             }
-        }
+        }*/
 
         try {
-            this.s.close();
+            if(this.s != null) {
+                this.s.close();
+            }
         } catch (IOException e) {
             System.err.println("Could not close the socket!");
         }
 
-        try {
+        /*try {
             if(this.notification != null)
                 this.notification.close();
         } catch (IOException e) {
             System.err.println("Could not close the socket!");
-        }
+        }*/
     }
 
     private synchronized void writeObject(Object obj) throws IOException {

@@ -3,10 +3,7 @@ package Server;
 import Dados.Ficheiro;
 import Dados.Utilizador;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +37,9 @@ public class InteracaoDatabase {
         }
     }
 
-    public Connection getConnection() {
-        return this.connection;
+    public void shutdown() throws SQLException {
+        this.statement.close();
+        this.connection.close();
     }
 
     public boolean isRegistered(String username) {
