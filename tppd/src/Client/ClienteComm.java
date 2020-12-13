@@ -44,7 +44,7 @@ public class ClienteComm extends Thread {
             datagramSocket.receive(receivingPacket);
 
             String receivedData = new String(receivingPacket.getData());
-            System.out.println("Recebi: " + receivedData.trim());
+            System.out.println("Recived TCP Port Server by UDP and it is " + receivedData.trim());
 
             tcp_port_server = Integer.parseInt(receivedData.trim());
             datagramSocket.close();
@@ -56,13 +56,9 @@ public class ClienteComm extends Thread {
 
         try {
             Socket socket = new Socket(ip_server, tcp_port_server);
-            System.out.println("Connected!");
-
             oout = new ObjectOutputStream(socket.getOutputStream());
             oin = new ObjectInputStream(socket.getInputStream());
-
-            oout.writeObject("DEMOROU MAS DEU");
-
+            System.out.println("TCP Socket created successfully!");
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {

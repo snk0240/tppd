@@ -58,9 +58,9 @@ public class ClientMain {
             imagem = scanner.nextLine();
 
         } catch (InputMismatchException e){
-            System.out.println("Gerou um erro a declarar os portos.");
+            System.out.println("Some port declaration error.");
         } catch (Exception e){
-            System.out.println("Gerou um erro a declarar qualquer coisa.");
+            System.out.println("Some declaration error.");
         }
 
         util.setPortoTCP(portoTCP);
@@ -156,7 +156,7 @@ public class ClientMain {
         if(args.length != 2){
             System.err.println("Sintaxe: java Client <IP_SERVIDOR> <UDP_PORT_SERVIDOR>");
             return;
-        } System.out.println("Server IP: "+args[0]+"\nServer UDP port: " + args[1] + "\n");
+        } System.out.println("Server IP is "+args[0]+" and Server UDP Port is " + args[1] + "\n");
 
         TransferenciaFicheiros transferenciaFicheiros = new TransferenciaFicheiros();
         ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]), Integer.parseInt(args[1]), transferenciaFicheiros);

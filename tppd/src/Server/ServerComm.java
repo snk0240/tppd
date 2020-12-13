@@ -24,7 +24,6 @@ public class ServerComm extends Thread {
     final int portMulticast = 5432;
     final int portBDdefault = 3306;
     int portDB;
-    int identificador;
 
     //InteracaoDatabase idb;
     InetAddress group;

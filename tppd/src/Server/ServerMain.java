@@ -27,7 +27,7 @@ public class ServerMain {
             portUDP = Integer.parseInt(args[0]);
             portTCP = Integer.parseInt(args[1]);
             ipDB = args[2];
-            System.out.println("UDP port: " + portUDP + "\nTCP port: " + portTCP + "\nBD's ip: " + ipDB + "\n");
+            System.out.println("Server UDP Port is " + portUDP + " and TCP Port: is " + portTCP + ", BD's ip is " + ipDB + "\n");
 
             ServerComm s = new ServerComm(portUDP, portTCP, ipDB, servidor);
             s.start();
