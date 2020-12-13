@@ -25,7 +25,7 @@ public class ClientMain {
         Msg msg = new Msg();
         String destino,mensagem;
 
-        msg.setEnvia(cli.utilizador.getUsername());
+        msg.setEnvia(this.cli.utilizador.getUsername());
         try {
             System.out.println("Indique o utilizador para o qual quer enviar mensagem:\n");
             destino = scanner.nextLine();
@@ -110,7 +110,7 @@ public class ClientMain {
             switch (escolha) {
                 case 1:
                     this.cli.login(fazlogin());
-                    if(cli.autenticado)
+                    if(this.cli.autenticado)
                         System.out.println("Utilizador autenticado com sucesso!\n");
                     else
                         System.out.println("Login falhou! Tente outra vez...\n");
@@ -130,7 +130,7 @@ public class ClientMain {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }while(!cli.autenticado);
+        }while(!this.cli.autenticado);
 
         boolean sair = false;
         do

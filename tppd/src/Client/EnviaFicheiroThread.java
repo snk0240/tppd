@@ -12,10 +12,10 @@ public class EnviaFicheiroThread extends Thread {
 
     @Override
     public void run() {
-        comunicacaoComServidor.getTransferenciaFicheiros().LoadFile(
-                request.getFilename(),
-                request.getIp(),
-                request.getPorto(),
+        this.comunicacaoComServidor.getTransferenciaFicheiros().LoadFile(
+                this.request.getFilename(),
+                this.request.getIp(),
+                this.request.getPorto(),
                 System.getProperty("user.dir"));
     }
 }
