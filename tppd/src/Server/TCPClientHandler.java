@@ -99,7 +99,6 @@ public class TCPClientHandler extends Thread implements Observer {
                 System.out.println(e);
             }
         }
-        this.exit();
     }
 
     public void shutdown() {
@@ -118,6 +117,8 @@ public class TCPClientHandler extends Thread implements Observer {
 
         try {
             if(this.s != null) {
+                this.in.close();
+                this.out.close();
                 this.s.close();
             }
         } catch (IOException e) {

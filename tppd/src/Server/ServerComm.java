@@ -71,11 +71,13 @@ public class ServerComm extends Thread {
         }
 
         try {
-            this.tcpClientHandler.join();
-            this.nextClient.close();
-            this.server.close();
-        } catch (IOException | InterruptedException e) {
+            this.shutdown();
+        } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -96,10 +98,15 @@ public class ServerComm extends Thread {
         //fecha a coneccao BD
         this.servidor.shutdown();
 
-        this.udp_handler.interrupt();
-        this.udp_handler.join(1);
-        this.tcpClientHandler.interrupt();
-        this.tcpClientHandler.join(1);
+        this.datagramSocket.close();
+        this.udp_handler.join();
+
+        if(this.tcpClientHandler != null) {
+            this.tcpClientHandler.shutdown();
+            this.tcpClientHandler.join();
+        }
+
+        this.multicastHandler.shutdown();
 
         if (this.nextClient != null)
             this.nextClient.close();
@@ -110,7 +117,6 @@ public class ServerComm extends Thread {
         if (this.multicastSocket != null)
             this.multicastSocket.close();
 
-        System.exit(0);
     }
 
     public class UDPClientHandler extends Thread {
@@ -139,6 +145,7 @@ public class ServerComm extends Thread {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                this.interrupt();
             }
         }
     }

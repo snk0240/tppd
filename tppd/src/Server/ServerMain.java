@@ -41,7 +41,8 @@ public class ServerMain {
 
                 if (msg.equalsIgnoreCase(EXIT)) {
                     s.shutdown();
-                    break;
+                    s.join();
+                    System.exit(0);
                 }
             }
         } catch (NumberFormatException e) {
