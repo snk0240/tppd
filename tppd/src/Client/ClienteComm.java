@@ -14,11 +14,10 @@ public class ClienteComm extends Thread {
     private Socket socket;
     private DatagramSocket datagramSocket;
 
-    private ObjectOutputStream oout;
     private ObjectInputStream oin;
+    private ObjectOutputStream oout;
 
     private TransferenciaFicheiros transferenciaFicheiros;
-    private int identificador;
     private boolean autenticado = false;
 
     byte[] data1 = new byte[1024];
@@ -28,7 +27,6 @@ public class ClienteComm extends Thread {
         this.ip_server = ip;
         this.udp_port_server = udp;
         this.transferenciaFicheiros = transferencia;
-        this.identificador = 1;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class ClienteComm extends Thread {
         try {
             this.datagramSocket = new DatagramSocket();
 
-            byte[] data1 = Integer.toString(this.identificador).getBytes();
+            byte[] data1 = Integer.toString(1).getBytes();
             DatagramPacket sendingPacket = new DatagramPacket(data1, data1.length, ip_server, udp_port_server);
             this.datagramSocket.send(sendingPacket);
 
@@ -56,8 +54,8 @@ public class ClienteComm extends Thread {
 
         try {
             Socket socket = new Socket(this.ip_server, this.tcp_port_server);
-            this.oout = new ObjectOutputStream(socket.getOutputStream());
-            this.oin = new ObjectInputStream(socket.getInputStream());
+            oin = new ObjectInputStream(socket.getInputStream());
+            oout = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("TCP Socket created successfully!");
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -81,12 +79,11 @@ public class ClienteComm extends Thread {
     public void registo(Utilizador utilizador){
         Boolean autenticado = false;
         try {
-            //oout.reset();
+            //this.oout.reset();
             this.oout.writeObject(utilizador);
             this.oout.flush();
-            //ois = new ObjectInputStream(socketServidor.getInputStream());
-            //autenticado = ois.readBoolean();
-        } catch (IOException | NullPointerException  e) {
+            this.autenticado = (Boolean)oin.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

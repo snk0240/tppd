@@ -98,7 +98,7 @@ public class ClientMain {
                     if(this.cli.isAutenticado())
                         System.out.println("Utilizador registado com sucesso!\n");
                     else
-                        //System.out.println("Registo falhou! Tente outra vez...\n");
+                        System.out.println("Registo falhou! Tente outra vez...\n");
                         break;
                 case 3:
                     System.exit(0);

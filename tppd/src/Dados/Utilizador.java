@@ -115,6 +115,6 @@ public class Utilizador implements Serializable {
     }
 
     public String toDB(){
-        return "('"+nome+"','"+username+"','"+password+"','"+ip+"',"+portoUDP+","+portoTCP+","+contador+",'"+imagem+"')";
+        return "("+portoTCP+",'"+nome+"','"+username+"','"+password+"','"+ip+"',"+portoUDP+","+portoTCP+","+contador+",'"+imagem+"')";
     }
 }

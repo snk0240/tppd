@@ -60,12 +60,12 @@ public class TCPClientHandler extends Thread implements Observer {
                 if(received instanceof Utilizador){
                     registo = this.servidor.registaUtilizador((Utilizador)received);
                     System.out.println(((Utilizador) received).toDB());
-                    /*this.out.writeObject(registo);
+                    this.out.writeObject(registo);
                     this.out.flush();
                     if(registo == true){
                         user = ((Utilizador) received).getUsername();
                         this.servidor.getMapSockets().put(user, this.streams);
-                    }*/
+                    }
                 }
                 else if(received instanceof String){
                     if(received.equals("DEMOROU MAS DEU")){

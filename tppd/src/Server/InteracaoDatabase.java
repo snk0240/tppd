@@ -136,7 +136,7 @@ public class InteracaoDatabase {
     public boolean createT_User() {
         try {
             this.query = "CREATE TABLE IF NOT EXISTS " + this.DB_NAME + ".user (" +
-                    "id INT NOT NULL AUTO_INCREMENT," +
+                    "id INT DEFAULT NULL," +
                     "nome VARCHAR(30) DEFAULT NULL," +
                     "username VARCHAR(15) DEFAULT NULL," +
                     "password VARCHAR(15) DEFAULT NULL," +
@@ -144,27 +144,12 @@ public class InteracaoDatabase {
                     "udp_port INT DEFAULT NULL," +
                     "tcp_port INT DEFAULT NULL," +
                     "ativo TINYINT DEFAULT '0'," +
-                    "imagem VARCHAR(150) DEFAULT NULL," +
-                    "PRIMARY KEY (id))";
+                    "imagem VARCHAR(150) DEFAULT NULL)";
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(this.query);
             return true;
         } catch (Exception e) {
             System.err.println(e);
-        }
-        return false;
-    }
-
-    public boolean create_Users() {
-        try {
-            this.query = "INSERT INTO " + this.DB_NAME + ".user VALUES " +
-                    "('andre joao','andre123','andre123','127.0.0.1',3636,3636,0,NULL)," +
-                    "('andre sousa','andre321','andre321','127.0.0.1',3737,3737,0,NULL);";
-            this.statement = this.connection.createStatement();
-            this.statement.executeUpdate(this.query);
-            return true;
-        } catch (Exception e) {
-            System.out.println(e);
         }
         return false;
     }
@@ -214,7 +199,7 @@ public class InteracaoDatabase {
     public void register(Utilizador utilizador) {
         try {
             this.statement = this.connection.createStatement();
-            this.query = "INSERT INTO " + this.DB_NAME + ".user(nome,username,password,ip,udp_port,tcp_port,ativo,imagem) value"
+            this.query = "INSERT INTO " + this.DB_NAME + ".user(id,nome,username,password,ip,udp_port,tcp_port,ativo,imagem) value"
                     + utilizador.toDB();
             this.statement.executeUpdate(this.query);
         } catch (Exception e) {
