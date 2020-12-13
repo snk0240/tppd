@@ -22,10 +22,10 @@ public class ClienteComm extends Thread {
     private TransferenciaFicheiros transferenciaFicheiros;
     boolean autenticado = false;
     private Database database;
-    Utilizador utilizador;
+    private Utilizador utilizador;
 
-    byte[] data1 = new byte[1024];
-    byte[] data2 = new byte[1024];
+    private byte[] data1 = new byte[1024];
+    private byte[] data2 = new byte[1024];
 
     public ClienteComm(InetAddress ip, int udp, TransferenciaFicheiros transferencia){
         this.ip_server = ip;
@@ -58,8 +58,8 @@ public class ClienteComm extends Thread {
 
         try {
             Socket socket = new Socket(this.ip_server, this.tcp_port_server);
-            oin = new ObjectInputStream(socket.getInputStream());
-            oout = new ObjectOutputStream(socket.getOutputStream());
+            this.oin = new ObjectInputStream(socket.getInputStream());
+            this.oout = new ObjectOutputStream(socket.getOutputStream());
             System.out.println("TCP Socket created successfully!");
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -142,7 +142,7 @@ public class ClienteComm extends Thread {
     }
 
     public int getUdp_port_server() {
-        return udp_port_server;
+        return this.udp_port_server;
     }
 
     public void setUdp_port_server(int udp_port_server) {
@@ -150,7 +150,7 @@ public class ClienteComm extends Thread {
     }
 
     public int getTcp_port_server() {
-        return tcp_port_server;
+        return this.tcp_port_server;
     }
 
     public void setTcp_port_server(int tcp_port_server) {
@@ -158,7 +158,7 @@ public class ClienteComm extends Thread {
     }
 
     public TransferenciaFicheiros getTransferenciaFicheiros() {
-        return transferenciaFicheiros;
+        return this.transferenciaFicheiros;
     }
 
     public void setTransferenciaFicheiros(TransferenciaFicheiros transferenciaFicheiros) {
@@ -166,7 +166,7 @@ public class ClienteComm extends Thread {
     }
 
     public boolean isAutenticado() {
-        return autenticado;
+        return this.autenticado;
     }
 
     public void setAutenticado(boolean autenticado) {

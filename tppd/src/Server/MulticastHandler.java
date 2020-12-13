@@ -96,6 +96,27 @@ public class MulticastHandler extends Thread {
         }
     }
 
+    public void shutdown() throws IOException, InterruptedException {
+        this.isAlive = false;
+        this.multicastKeepAlive.isAlive = false;
+
+        if(this.multicastSocket != null)
+            //ao fechar o multicastsocket vai criar SocketException no entanto é um procedimento necessário para terminar a thread
+            this.multicastSocket.close();
+
+        if(this.buff != null)
+            this.buff.close();
+
+        if(this.in != null)
+            this.in.close();
+
+        if(this.out != null)
+            this.out.close();
+
+        this.verifyAliveList.join();
+        this.multicastKeepAlive.join();
+    }
+
     public class VerifyAliveList extends Thread {
 
         public VerifyAliveList() {

@@ -8,7 +8,7 @@ public class RecebeFicheiroThread extends Thread{
     private String fileName;
     private ClienteComm cli;
     private Socket socket;
-    static final int MAX_SIZE = 10000;
+    private static final int MAX_SIZE = 10000;
 
     public RecebeFicheiroThread(ClienteComm cli, Socket socket){
         this.cli=cli;

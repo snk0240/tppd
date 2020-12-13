@@ -5,16 +5,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class TransfereThread extends Thread {
-    ServerSocket serverSocket;
+    private ServerSocket serverSocket;
     private int porto;
-    String fileName;
-    ClienteComm cli;
+    private String fileName;
+    private ClienteComm cli;
 
     public TransfereThread(int porto,ClienteComm cli){
         this.porto = porto;
         this.cli = cli;
         try {
-            serverSocket = new ServerSocket(porto);
+            this.serverSocket = new ServerSocket(porto);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -25,7 +25,7 @@ public class TransfereThread extends Thread {
         while(true) {
             try {
                 System.out.println("TransfereThread iniciada\n");
-                Socket socket = serverSocket.accept();
+                Socket socket = this.serverSocket.accept();
                 System.out.println("Recebi pedido para receber ficheiro de: " + socket.getInetAddress().getHostAddress());
                 RecebeFicheiroThread recebeFicheiroThread = new RecebeFicheiroThread(cli,socket);
                 recebeFicheiroThread.setDaemon(true);

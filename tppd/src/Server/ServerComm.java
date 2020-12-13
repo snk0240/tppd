@@ -13,7 +13,6 @@ public class ServerComm extends Thread {
     private TCPClientHandler tcpClientHandler;
     private UDPClientHandler udp_handler;
 
-    private final ServerObservable serverObs;
     private final Server servidor;
 
     private MulticastSocket multicastSocket;
@@ -31,7 +30,6 @@ public class ServerComm extends Thread {
     private final int portMulticast = 5432;
 
     public ServerComm(int UDP_port, int TCP_port, String DB_ip, Server servidor) throws UnknownHostException {
-        this.serverObs = new ServerObservable();
         this.portUDP = UDP_port;
         this.portTCP = TCP_port;
         this.ipDB = DB_ip;
@@ -61,7 +59,7 @@ public class ServerComm extends Thread {
             try {
                 this.nextClient = this.server.accept();
 
-                this.tcpClientHandler = new TCPClientHandler(this.nextClient, this.serverObs, this.portTCP, this.servidor);
+                this.tcpClientHandler = new TCPClientHandler(this.nextClient, this.portTCP, this.servidor);
                 this.tcpClientHandler.start();
             } catch (BindException e) {
                 System.err.println("Service already running on port " + this.portTCP);
@@ -71,11 +69,13 @@ public class ServerComm extends Thread {
         }
 
         try {
-            this.tcpClientHandler.join();
-            this.nextClient.close();
-            this.server.close();
-        } catch (IOException | InterruptedException e) {
+            this.shutdown();
+        } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
@@ -96,10 +96,16 @@ public class ServerComm extends Thread {
         //fecha a coneccao BD
         this.servidor.shutdown();
 
-        this.udp_handler.interrupt();
-        this.udp_handler.join(1);
-        this.tcpClientHandler.interrupt();
-        this.tcpClientHandler.join(1);
+        //ao fechar o datagramsocket vai criar SocketException no entanto é um procedimento necessário para terminar a thread
+        this.datagramSocket.close();
+        this.udp_handler.join();
+
+        if(this.tcpClientHandler != null) {
+            this.tcpClientHandler.shutdown();
+            this.tcpClientHandler.join();
+        }
+
+        this.multicastHandler.shutdown();
 
         if (this.nextClient != null)
             this.nextClient.close();
@@ -108,9 +114,8 @@ public class ServerComm extends Thread {
             this.server.close();
 
         if (this.multicastSocket != null)
+            //ao fechar o multicastsocket vai criar SocketException no entanto é um procedimento necessário para terminar a thread
             this.multicastSocket.close();
-
-        System.exit(0);
     }
 
     public class UDPClientHandler extends Thread {
@@ -139,6 +144,7 @@ public class ServerComm extends Thread {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                this.interrupt();
             }
         }
     }
