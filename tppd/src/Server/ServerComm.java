@@ -4,6 +4,7 @@ import Dados.Utilizador;
 
 import java.io.*;
 import java.net.*;
+import java.sql.SQLException;
 
 public class ServerComm extends Thread {
     private static final String SERVER_SHUTDOWN = "SERVER SHUTDOWN";
@@ -15,10 +16,10 @@ public class ServerComm extends Thread {
     private final ServerObservable serverObs;
     private final Server servidor;
 
-    private MulticastSocket multicastSocket = null;
-    private DatagramSocket datagramSocket = null;
-    private ServerSocket server = null;
-    private Socket nextClient = null;
+    private MulticastSocket multicastSocket;
+    private DatagramSocket datagramSocket;
+    private ServerSocket server;
+    private Socket nextClient;
 
     private final int MAX_CONNECTIONS = 10;
     private final String groupIP = "230.0.0.0";
@@ -78,10 +79,10 @@ public class ServerComm extends Thread {
         }
     }
 
-    public void shutdown() throws IOException, InterruptedException {
+    public void shutdown() throws IOException, InterruptedException, SQLException {
         this.isAlive = false;
 
-        MsgMulticast msgMulticast = new MsgMulticast(this.SERVER_SHUTDOWN, "Im out nigga");
+        MsgMulticast msgMulticast = new MsgMulticast(this.SERVER_SHUTDOWN, this.portTCP);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(msgMulticast);
@@ -89,12 +90,16 @@ public class ServerComm extends Thread {
         DatagramPacket inputPacket = new DatagramPacket(data1, data1.length, InetAddress.getByName("230.0.0.0"), this.portMulticast);
 
         inputPacket.setData(data1);
+        //informa via multicast que vai terminar
         this.multicastSocket.send(inputPacket);
 
-        //avisar os clientes para terminarem
-        //avisar os servidores que vai encerrar
+        //fecha a coneccao BD
+        this.servidor.shutdown();
 
-        //this.tcpClientHandler.join();
+        this.udp_handler.interrupt();
+        this.udp_handler.join(1);
+        this.tcpClientHandler.interrupt();
+        this.tcpClientHandler.join(1);
 
         if (this.nextClient != null)
             this.nextClient.close();

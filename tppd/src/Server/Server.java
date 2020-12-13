@@ -9,8 +9,6 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.rmi.RemoteException;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -151,5 +149,9 @@ public class Server {
         database.setFicheiros(ficheiros);
         database.setUploads(uploads);*/
         return database;
+    }
+
+    public void shutdown() throws SQLException {
+        this.db.shutdown();
     }
 }

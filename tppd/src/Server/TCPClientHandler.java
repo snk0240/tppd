@@ -102,10 +102,10 @@ public class TCPClientHandler extends Thread implements Observer {
         this.exit();
     }
 
-    public void exit() {
+    public void shutdown() {
         this.isAlive = false;
 
-        if(this.notification != null){
+        /*if(this.notification != null){
             try {
                 synchronized(this.notification){
                     //notificationOut.writeObject(new ServerShutdown());
@@ -114,20 +114,22 @@ public class TCPClientHandler extends Thread implements Observer {
             } catch (IOException e) {
                 System.err.println("Couldn't send shutdown packet: " + e);
             }
-        }
+        }*/
 
         try {
-            this.s.close();
+            if(this.s != null) {
+                this.s.close();
+            }
         } catch (IOException e) {
             System.err.println("Could not close the socket!");
         }
 
-        try {
+        /*try {
             if(this.notification != null)
                 this.notification.close();
         } catch (IOException e) {
             System.err.println("Could not close the socket!");
-        }
+        }*/
     }
 
     private synchronized void writeObject(Object obj) throws IOException {
