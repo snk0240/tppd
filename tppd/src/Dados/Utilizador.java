@@ -15,6 +15,7 @@ public class Utilizador implements Serializable {
     private int portoTCP;//porto TCP do utilizador
     private boolean ativo;//0 inativo, 1 ativo
     private String imagem;//imagem do utilizador
+    private int contador = 1;//id
 
     public Utilizador(){
         try{
@@ -33,6 +34,7 @@ public class Utilizador implements Serializable {
         this.portoTCP=portoTCP;
         this.ativo=ati;
         this.imagem=image;
+        this.contador++;
     }
     @Override
     public String toString() {
@@ -113,6 +115,6 @@ public class Utilizador implements Serializable {
     }
 
     public String toDB(){
-        return "('"+nome+"','"+"'"+username+"','"+password+"','"+ip+"','"+portoUDP+"','"+portoTCP+"','"+1+"','"+imagem+"')";
+        return "('"+nome+"','"+username+"','"+password+"','"+ip+"',"+portoUDP+","+portoTCP+","+contador+",'"+imagem+"')";
     }
 }

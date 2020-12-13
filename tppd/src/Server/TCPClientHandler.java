@@ -25,6 +25,7 @@ public class TCPClientHandler extends Thread implements Observer {
     private Server servidor;
     private int tcp_port;
     private Streams streams;
+    private int contador;
 
     public TCPClientHandler(Socket s, ServerObservable serverObs, int tcp_port, Server server) {
         this.s = s;
@@ -42,6 +43,7 @@ public class TCPClientHandler extends Thread implements Observer {
         this.streams.setOin(this.in);
         this.streams.setOout(this.out);
         this.streams.setSocket(this.s);
+        this.contador++;
     }
 
     @Override
@@ -57,23 +59,27 @@ public class TCPClientHandler extends Thread implements Observer {
 
                 if(received instanceof Utilizador){
                     registo = this.servidor.registaUtilizador((Utilizador)received);
-
-                    this.out.writeObject(registo);
+                    System.out.println(((Utilizador) received).toDB());
+                    /*this.out.writeObject(registo);
                     this.out.flush();
                     if(registo == true){
                         user = ((Utilizador) received).getUsername();
                         this.servidor.getMapSockets().put(user, this.streams);
-                    }
+                    }*/
                 }
                 else if(received instanceof String){
                     if(received.equals("DEMOROU MAS DEU")){
                         System.out.println("DEMOROU MAS FOI");
                     }
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+                else {
+                }
+            }catch(Exception e){
+                System.out.println(e);
+            }
+            try{
+                out.reset();
+            }catch(Exception e){
                 e.printStackTrace();
             }
         }
