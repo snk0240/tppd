@@ -83,7 +83,7 @@ public class ClientMain {
             System.out.println("Selecione uma das opções:\n" +
                     "1-Login\n" +
                     "2-Registar\n" +
-                    "3-Sair");
+                    "3-Sair\n>");
             escolha = scan.nextInt();
             switch (escolha) {
                 case 1:
@@ -159,7 +159,7 @@ public class ClientMain {
         } System.out.println("Server IP: "+args[0]+"\nServer UDP port: " + args[1] + "\n");
 
         TransferenciaFicheiros transferenciaFicheiros = new TransferenciaFicheiros();
-        ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]),Integer.parseInt(args[1]),transferenciaFicheiros);
+        ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]), Integer.parseInt(args[1]), transferenciaFicheiros);
         cli.start();
         //COMECA O MENU DO CLIENTE
         System.out.println("OLA");

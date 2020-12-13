@@ -8,6 +8,7 @@ public class ServerComm extends Thread {
 
     private MulticastHandler multicastHandler;
     private TCPClientHandler tcpClientHandler;
+    private UDPClientHandler udp_handler;
 
     final int MAX_CONNECTIONS = 10;
     private final ServerObservable serverObs;
@@ -62,7 +63,7 @@ public class ServerComm extends Thread {
             e.printStackTrace();
         }
 
-        UDPClientHandler udp_handler = new UDPClientHandler();
+        udp_handler = new UDPClientHandler();
         udp_handler.start();
 
         while (isAlive) {
@@ -79,9 +80,10 @@ public class ServerComm extends Thread {
         }
 
         try {
+            this.tcpClientHandler.join();
             this.nextClient.close();
             this.server.close();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }

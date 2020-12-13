@@ -51,6 +51,7 @@ public class ServerMain {
             e.printStackTrace();
         } catch (InterruptedException e) {
             e.printStackTrace();
+            System.err.println("Erro ao invocar função shutdown:\t" + e);
         }
     }
 }
