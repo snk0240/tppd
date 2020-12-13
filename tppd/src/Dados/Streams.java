@@ -9,9 +9,7 @@ public class Streams {
     private ObjectInputStream oin;
     private Socket socket;
 
-    public Streams(){
-
-    }
+    public Streams(){ }
 
     public ObjectOutputStream getOout() {
         return oout;

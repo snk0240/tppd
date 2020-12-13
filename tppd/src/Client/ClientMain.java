@@ -162,7 +162,6 @@ public class ClientMain {
         ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]), Integer.parseInt(args[1]), transferenciaFicheiros);
         cli.start();
         //COMECA O MENU DO CLIENTE
-        System.out.println("OLA");
         ClientMain cli_main = new ClientMain(cli,transferenciaFicheiros);
         cli_main.comeca();
     }
