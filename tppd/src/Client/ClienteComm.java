@@ -34,7 +34,7 @@ public class ClienteComm extends Thread {
     }
 
     @Override
-    public void start() {
+    public void run() {
         try {
             datagramSocket = new DatagramSocket();
 

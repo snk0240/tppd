@@ -8,6 +8,7 @@ public class ServerComm extends Thread {
 
     private MulticastHandler multicastHandler;
     private TCPClientHandler tcpClientHandler;
+    private UDPClientHandler udp_handler;
 
     final int MAX_CONNECTIONS = 10;
     private final ServerObservable serverObs;
@@ -62,34 +63,27 @@ public class ServerComm extends Thread {
             e.printStackTrace();
         }
 
-        UDPClientHandler udp_handler = new UDPClientHandler();
+        udp_handler = new UDPClientHandler();
         udp_handler.start();
 
         while (isAlive) {
             try {
                 nextClient = server.accept();
 
-                tcpClientHandler = new TCPClientHandler(nextClient, serverObs);
+                tcpClientHandler = new TCPClientHandler(nextClient, serverObs, portTCP, servidor);
                 tcpClientHandler.start();
             } catch (BindException e) {
                 System.err.println("Service already running on port " + portTCP);
             } catch (IOException e) {
                 System.err.println("I/O error --" + e);
-            } finally {
-                if (server != null) {
-                    try {
-                        server.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
 
         try {
+            this.tcpClientHandler.join();
             this.nextClient.close();
             this.server.close();
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -134,7 +128,7 @@ public class ServerComm extends Thread {
         UDPClientHandler() { }
 
         @Override
-        public synchronized void start() {
+        public synchronized void run() {
             try {
                 datagramSocket = new DatagramSocket(portUDP);
                 while (isAlive) {

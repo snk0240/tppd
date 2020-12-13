@@ -50,6 +50,8 @@ public class ServerMain {
             System.err.println("The BD port should be an unsigned int:\t" + e);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            System.err.println("Erro ao invocar função shutdown:\t" + e);
         }
     }
 }
