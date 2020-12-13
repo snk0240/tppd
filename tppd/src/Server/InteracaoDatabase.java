@@ -38,6 +38,21 @@ public class InteracaoDatabase {
         }
     }
 
+    public void termina(){
+        this.query = "SELECT * FROM " + this.DB_NAME + ".user;";
+        try {
+            this.statement = this.connection.createStatement();
+            this.rs = this.statement.executeQuery(this.query);
+            while (this.rs.next()) {
+                if (this.rs.getString("ativo").equals(true)) {
+                    setDesligado(this.rs.getString("username"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void shutdown() throws SQLException {
         this.statement.close();
         this.connection.close();
@@ -138,7 +153,7 @@ public class InteracaoDatabase {
 
     public boolean setDesligado(String username) {
         try {
-            this.query = "update " + this.DB_NAME + ".user set ligado ='" + 0 + "' where username = '" + username + "'";
+            this.query = "UPDATE "+this.DB_NAME+".user SET ativo = 0 WHERE username = a";
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(this.query);
             return true;
@@ -150,7 +165,7 @@ public class InteracaoDatabase {
 
     public void setLigado(String username) {
         try {
-            this.query = "update " + this.DB_NAME + ".user set ligado ='" + 1 + "' where username = '" + username + "'";
+            this.query = "UPDATE "+this.DB_NAME+".user SET o ='" + 1 + "' where username='"+username+"'";
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(this.query);
         } catch (Exception e) {

@@ -9,6 +9,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -152,6 +153,8 @@ public class Server {
     }
 
     public void shutdown() throws SQLException {
+        this.db.termina();
+        System.out.println("depois do termina");
         this.db.shutdown();
     }
 }

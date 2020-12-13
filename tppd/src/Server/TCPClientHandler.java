@@ -99,7 +99,6 @@ public class TCPClientHandler extends Thread implements Observer {
                 System.out.println(e);
             }
         }
-        this.exit();
     }
 
     public void shutdown() {
