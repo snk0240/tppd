@@ -11,7 +11,6 @@ public class ServerMain {
         int portUDP;
         int portTCP;
         String ipDB;
-        int id;
 
         if (args.length != 3) {
             //portos de escuta tcp e udp e maquina da sua BD
@@ -49,6 +48,8 @@ public class ServerMain {
         } catch (NumberFormatException e) {
             System.err.println("The BD port should be an unsigned int:\t" + e);
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

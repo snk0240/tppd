@@ -34,7 +34,7 @@ public class ClienteComm extends Thread {
     }
 
     @Override
-    public void start() {
+    public void run() {
         try {
             datagramSocket = new DatagramSocket();
 
@@ -56,26 +56,19 @@ public class ClienteComm extends Thread {
             e.printStackTrace();
         }
 
-        try{
+        try {
             Socket socket = new Socket(ip_server, tcp_port_server);
             System.out.println("Connected!");
-
-            in = socket.getInputStream();
-            oin = new ObjectInputStream(in);
-
-            oin.readObject();
 
             out = socket.getOutputStream();
             oout = new ObjectOutputStream(out);
 
-            String teste = "CONFIRMACAO CLI";
-            oout.writeObject(teste);
+            in = socket.getInputStream();
+            oin = new ObjectInputStream(in);
 
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
     }

@@ -69,20 +69,12 @@ public class ServerComm extends Thread {
             try {
                 nextClient = server.accept();
 
-                tcpClientHandler = new TCPClientHandler(nextClient, serverObs);
+                tcpClientHandler = new TCPClientHandler(nextClient, serverObs, portTCP, servidor);
                 tcpClientHandler.start();
             } catch (BindException e) {
                 System.err.println("Service already running on port " + portTCP);
             } catch (IOException e) {
                 System.err.println("I/O error --" + e);
-            } finally {
-                if (server != null) {
-                    try {
-                        server.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
             }
         }
 
@@ -129,12 +121,11 @@ public class ServerComm extends Thread {
         return datagramSocket;
     }
 
-
     public class UDPClientHandler extends Thread {
         UDPClientHandler() { }
 
         @Override
-        public synchronized void start() {
+        public void run() {
             try {
                 datagramSocket = new DatagramSocket(portUDP);
                 while (isAlive) {
@@ -145,8 +136,6 @@ public class ServerComm extends Thread {
 
                     String receivedData = new String(inputPacket.getData());
                     System.out.println("Recebi: " + receivedData);
-                    identificador = Integer.parseInt(receivedData.trim());
-                    //idb = new InteracaoDatabase(ipDB, identificador);
 
                     InetAddress senderAddress = inputPacket.getAddress();
                     int senderPort = inputPacket.getPort();
