@@ -22,13 +22,6 @@ public class ServerComm extends Thread {
     int portTCP;
     String ipDB;
     final int portMulticast = 5432;
-    final int portBDdefault = 3306;
-    int portDB;
-
-    //InteracaoDatabase idb;
-    InetAddress group;
-
-    int nrServersOnline = 0;
 
     private Server servidor;
 
@@ -37,13 +30,7 @@ public class ServerComm extends Thread {
         this.portUDP = UDP_port;
         this.portTCP = TCP_port;
         this.ipDB = DB_ip;
-        this.group = InetAddress.getByName(DB_ip);
         this.isAlive = true;
-
-        //acrescenta porto ao IP da BD
-        //ir incrementando o portDB conforme o número de servers online
-        this.portDB = this.portBDdefault + this.nrServersOnline;
-        this.ipDB += ":" + this.portDB;
 
         this.servidor=servidor;
     }
@@ -74,7 +61,7 @@ public class ServerComm extends Thread {
             } catch (BindException e) {
                 System.err.println("Service already running on port " + portTCP);
             } catch (IOException e) {
-                System.err.println("I/O error --" + e);
+                System.err.println("I/O error:" + e);
             }
         }
 
@@ -132,11 +119,11 @@ public class ServerComm extends Thread {
                 while (isAlive) {
                     byte[] data1 = new byte[1024];
                     DatagramPacket inputPacket = new DatagramPacket(data1, data1.length);
-                    System.out.println("Esperando 1 conexao");
+                    System.out.println("Waiting for connection ...");
                     datagramSocket.receive(inputPacket);
 
                     String receivedData = new String(inputPacket.getData());
-                    System.out.println("Recebi: " + receivedData);
+                    System.out.println("Recived: " + receivedData);
 
                     InetAddress senderAddress = inputPacket.getAddress();
                     int senderPort = inputPacket.getPort();
@@ -144,7 +131,7 @@ public class ServerComm extends Thread {
                     byte[] data2 = Integer.toString(portTCP).getBytes();
                     DatagramPacket outputPacket = new DatagramPacket(data2, data2.length, senderAddress, senderPort);
                     datagramSocket.send(outputPacket);
-                    System.out.println("Enviei o meu porto TCP!");
+                    System.out.println("I just send my TCP port!");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

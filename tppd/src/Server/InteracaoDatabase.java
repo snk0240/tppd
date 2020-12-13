@@ -15,18 +15,13 @@ public class InteracaoDatabase {
     private static final String DB_PASS = "root123";
     private static final String TIMEZONE = "?serverTimezone=UTC";
     private static String DB_NAME;
-    private String ip;
-    private String url;
     private Connection connection;
-    int identificador;
 
     Statement stmt;
     String query;
 
-    public InteracaoDatabase(String ip, int id) {
-        this.ip = ip;
-        this.identificador = id;
-        DB_NAME = "tppd"+identificador;
+    public InteracaoDatabase(String ip, int portTCP) {
+        DB_NAME = "tppd"+portTCP;
         try {
             Class.forName(JDBC_DRIVER);
             connection = DriverManager.getConnection("jdbc:mysql://"+ip+TIMEZONE,DB_USER,DB_PASS);
