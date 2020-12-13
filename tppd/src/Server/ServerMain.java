@@ -11,13 +11,14 @@ public class ServerMain {
         int portUDP;
         int portTCP;
         String ipDB;
+        Server servidor;
 
         if (args.length != 3) {
             //portos de escuta tcp e udp e maquina da sua BD
             System.err.println("The arguments weren't introduced correctly: <UDP port>  <TCP port>  <BD IP>");
             return;
         }
-        Server servidor = null;
+
         try {
             portUDP = Integer.parseInt(args[0]);
             portTCP = Integer.parseInt(args[1]);

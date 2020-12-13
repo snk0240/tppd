@@ -23,7 +23,7 @@ public class RecebeFicheiroThread extends Thread{
 
             File path = new File(System.getProperty("user.dir"));
 
-            cli.transferenciaFicheiros.saveFile(socket,fileName,path);
+            cli.getTransferenciaFicheiros().saveFile(socket,fileName,path);
             try {
                 socket.close();
             }catch(Exception ee){

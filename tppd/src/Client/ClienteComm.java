@@ -8,46 +8,46 @@ import java.net.*;
 
 public class ClienteComm extends Thread {
 
-    InetAddress ip_server;
-    int udp_port_server;
-    int tcp_port_server;
-    Socket socket;
-    DatagramSocket datagramSocket;
+    private InetAddress ip_server;
+    private int udp_port_server;
+    private int tcp_port_server;
+    private Socket socket;
+    private DatagramSocket datagramSocket;
 
-    ObjectOutputStream oout;
-    ObjectInputStream oin;
+    private ObjectOutputStream oout;
+    private ObjectInputStream oin;
 
-    TransferenciaFicheiros transferenciaFicheiros;
-    int identificador;
-    boolean autenticado=false;
+    private TransferenciaFicheiros transferenciaFicheiros;
+    private int identificador;
+    private boolean autenticado = false;
 
     byte[] data1 = new byte[1024];
     byte[] data2 = new byte[1024];
 
     public ClienteComm(InetAddress ip, int udp, TransferenciaFicheiros transferencia){
-        ip_server = ip;
-        udp_port_server = udp;
-        transferenciaFicheiros = transferencia;
-        identificador = 1;
+        this.ip_server = ip;
+        this.udp_port_server = udp;
+        this.transferenciaFicheiros = transferencia;
+        this.identificador = 1;
     }
 
     @Override
     public void run() {
         try {
-            datagramSocket = new DatagramSocket();
+            this.datagramSocket = new DatagramSocket();
 
-            byte[] data1 = Integer.toString(identificador).getBytes();
+            byte[] data1 = Integer.toString(this.identificador).getBytes();
             DatagramPacket sendingPacket = new DatagramPacket(data1, data1.length, ip_server, udp_port_server);
-            datagramSocket.send(sendingPacket);
+            this.datagramSocket.send(sendingPacket);
 
             DatagramPacket receivingPacket = new DatagramPacket(data2, data2.length);
-            datagramSocket.receive(receivingPacket);
+            this.datagramSocket.receive(receivingPacket);
 
             String receivedData = new String(receivingPacket.getData());
             System.out.println("Recived TCP Port Server by UDP and it is " + receivedData.trim());
 
-            tcp_port_server = Integer.parseInt(receivedData.trim());
-            datagramSocket.close();
+            this.tcp_port_server = Integer.parseInt(receivedData.trim());
+            this.datagramSocket.close();
         } catch (SocketException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -55,9 +55,9 @@ public class ClienteComm extends Thread {
         }
 
         try {
-            Socket socket = new Socket(ip_server, tcp_port_server);
-            oout = new ObjectOutputStream(socket.getOutputStream());
-            oin = new ObjectInputStream(socket.getInputStream());
+            Socket socket = new Socket(this.ip_server, this.tcp_port_server);
+            this.oout = new ObjectOutputStream(socket.getOutputStream());
+            this.oin = new ObjectInputStream(socket.getInputStream());
             System.out.println("TCP Socket created successfully!");
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -71,8 +71,8 @@ public class ClienteComm extends Thread {
         Object obj;
         try {
             //oout.reset();
-            oout.writeObject(login);
-            oout.flush();
+            this.oout.writeObject(login);
+            this.oout.flush();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,8 +82,8 @@ public class ClienteComm extends Thread {
         Boolean autenticado = false;
         try {
             //oout.reset();
-            oout.writeObject(utilizador);
-            oout.flush();
+            this.oout.writeObject(utilizador);
+            this.oout.flush();
             //ois = new ObjectInputStream(socketServidor.getInputStream());
             //autenticado = ois.readBoolean();
         } catch (IOException | NullPointerException  e) {
@@ -93,8 +93,8 @@ public class ClienteComm extends Thread {
 
     public void shutdown() {
         try {
-            socket.close();
-            datagramSocket.close();
+            this.socket.close();
+            this.datagramSocket.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -104,10 +104,42 @@ public class ClienteComm extends Thread {
 
     public void getDatabase(){
         try{
-            oout.writeObject("getDatabase");
-            oout.flush();
+            this.oout.writeObject("getDatabase");
+            this.oout.flush();
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    public int getUdp_port_server() {
+        return udp_port_server;
+    }
+
+    public void setUdp_port_server(int udp_port_server) {
+        this.udp_port_server = udp_port_server;
+    }
+
+    public int getTcp_port_server() {
+        return tcp_port_server;
+    }
+
+    public void setTcp_port_server(int tcp_port_server) {
+        this.tcp_port_server = tcp_port_server;
+    }
+
+    public TransferenciaFicheiros getTransferenciaFicheiros() {
+        return transferenciaFicheiros;
+    }
+
+    public void setTransferenciaFicheiros(TransferenciaFicheiros transferenciaFicheiros) {
+        this.transferenciaFicheiros = transferenciaFicheiros;
+    }
+
+    public boolean isAutenticado() {
+        return autenticado;
+    }
+
+    public void setAutenticado(boolean autenticado) {
+        this.autenticado = autenticado;
     }
 }

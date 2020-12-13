@@ -4,29 +4,31 @@ import java.io.*;
 import java.net.*;
 
 public class ServerComm extends Thread {
-    public static final String SERVER_SHUTDOWN = "SERVER SHUTDOWN";
+    private static final String SERVER_SHUTDOWN = "SERVER SHUTDOWN";
 
     private MulticastHandler multicastHandler;
     private TCPClientHandler tcpClientHandler;
     private UDPClientHandler udp_handler;
 
-    final int MAX_CONNECTIONS = 10;
     private final ServerObservable serverObs;
-    MulticastSocket multicastSocket = null;
-    DatagramSocket datagramSocket = null;
-    ServerSocket server = null;
-    Socket nextClient = null;
+    private final Server servidor;
+
+    private MulticastSocket multicastSocket = null;
+    private DatagramSocket datagramSocket = null;
+    private ServerSocket server = null;
+    private Socket nextClient = null;
+
+    private final int MAX_CONNECTIONS = 10;
+    private final String groupIP = "230.0.0.0";
     private boolean isAlive;
 
-    int portUDP;
-    int portTCP;
-    String ipDB;
-    final int portMulticast = 5432;
-
-    private Server servidor;
+    private int portUDP;
+    private int portTCP;
+    private String ipDB;
+    private final int portMulticast = 5432;
 
     public ServerComm(int UDP_port, int TCP_port, String DB_ip, Server servidor) throws UnknownHostException {
-        serverObs = new ServerObservable();
+        this.serverObs = new ServerObservable();
         this.portUDP = UDP_port;
         this.portTCP = TCP_port;
         this.ipDB = DB_ip;
@@ -38,28 +40,28 @@ public class ServerComm extends Thread {
     @Override
     public void run() {
         try {
-            multicastSocket = new MulticastSocket(this.portMulticast);
-            multicastSocket.joinGroup(InetAddress.getByName("230.0.0.0"));
-            multicastHandler = new MulticastHandler(multicastSocket);
-            multicastHandler.start();
+            this.multicastSocket = new MulticastSocket(this.portMulticast);
+            this.multicastSocket.joinGroup(InetAddress.getByName(this.groupIP));
+            this.multicastHandler = new MulticastHandler(this.multicastSocket);
+            this.multicastHandler.start();
 
-            this.server = new ServerSocket(this.portTCP, MAX_CONNECTIONS);
+            this.server = new ServerSocket(this.portTCP, this.MAX_CONNECTIONS);
             System.out.println("Server started");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        udp_handler = new UDPClientHandler();
-        udp_handler.start();
+        this.udp_handler = new UDPClientHandler();
+        this.udp_handler.start();
 
-        while (isAlive) {
+        while (this.isAlive) {
             try {
-                nextClient = server.accept();
+                this.nextClient = this.server.accept();
 
-                tcpClientHandler = new TCPClientHandler(nextClient, serverObs, portTCP, servidor);
-                tcpClientHandler.start();
+                this.tcpClientHandler = new TCPClientHandler(this.nextClient, this.serverObs, this.portTCP, this.servidor);
+                this.tcpClientHandler.start();
             } catch (BindException e) {
-                System.err.println("Service already running on port " + portTCP);
+                System.err.println("Service already running on port " + this.portTCP);
             } catch (IOException e) {
                 System.err.println("I/O error:" + e);
             }
@@ -85,7 +87,7 @@ public class ServerComm extends Thread {
         DatagramPacket inputPacket = new DatagramPacket(data1, data1.length, InetAddress.getByName("230.0.0.0"), this.portMulticast);
 
         inputPacket.setData(data1);
-        multicastSocket.send(inputPacket);
+        this.multicastSocket.send(inputPacket);
 
         //avisar os clientes para terminarem
         //avisar os servidores que vai encerrar
@@ -98,9 +100,8 @@ public class ServerComm extends Thread {
         if (this.server != null)
             this.server.close();
 
-        //verifica se é o ultimo servidor online, se for encerra multicastsocket
-        if (multicastSocket != null)
-            multicastSocket.close();
+        if (this.multicastSocket != null)
+            this.multicastSocket.close();
 
         System.exit(0);
     }
