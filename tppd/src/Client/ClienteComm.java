@@ -14,9 +14,7 @@ public class ClienteComm extends Thread {
     Socket socket;
     DatagramSocket datagramSocket;
 
-    OutputStream out;
     ObjectOutputStream oout;
-    InputStream in;
     ObjectInputStream oin;
 
     TransferenciaFicheiros transferenciaFicheiros;
@@ -60,11 +58,10 @@ public class ClienteComm extends Thread {
             Socket socket = new Socket(ip_server, tcp_port_server);
             System.out.println("Connected!");
 
-            out = socket.getOutputStream();
-            oout = new ObjectOutputStream(out);
+            oout = new ObjectOutputStream(socket.getOutputStream());
+            oin = new ObjectInputStream(socket.getInputStream());
 
-            in = socket.getInputStream();
-            oin = new ObjectInputStream(in);
+            oout.writeObject("DEMOROU MAS DEU");
 
         } catch (UnknownHostException e) {
             e.printStackTrace();

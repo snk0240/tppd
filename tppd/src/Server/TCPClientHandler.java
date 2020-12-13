@@ -1,5 +1,7 @@
 package Server;
 
+import Dados.Streams;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,6 +23,7 @@ public class TCPClientHandler extends Thread implements Observer {
 
     private Server servidor;
     private int tcp_port;
+    private Streams streams;
 
     public TCPClientHandler(Socket s, ServerObservable serverObs, int tcp_port, Server server) {
         this.s = s;
@@ -28,23 +31,21 @@ public class TCPClientHandler extends Thread implements Observer {
         this.isAlive = true;
         this.servidor = server;
         this.tcp_port = tcp_port;
-    }
-
-    @Override
-    public void run() {
-        Object received;
         try {
             out = new ObjectOutputStream(s.getOutputStream());
             in = new ObjectInputStream(s.getInputStream());
         } catch (IOException e) {
             e.printStackTrace();
-            try {
-                s.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            return;
         }
+        streams = new Streams();
+        streams.setOin(in);
+        streams.setOout(out);
+        streams.setSocket(s);
+    }
+
+    @Override
+    public void run() {
+        Object received;
 
         while (isAlive) {
             try {
@@ -52,9 +53,8 @@ public class TCPClientHandler extends Thread implements Observer {
                 received = in.readObject();
 
                 if(received instanceof String){
-                    if(received.equals("Data")){
-                        out.writeObject(servidor.getDatabase());
-                        out.flush();
+                    if(received.equals("DEMOROU MAS DEU")){
+                        System.out.println("DEMOROU MAS FOI");
                     }
                 }
 
