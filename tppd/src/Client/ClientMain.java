@@ -1,5 +1,6 @@
 package Client;
 
+import Dados.Database;
 import Dados.Login;
 import Dados.Msg;
 import Dados.Utilizador;
@@ -13,6 +14,7 @@ public class ClientMain {
     private ClienteComm cli;
     private TransferenciaFicheiros transferenciaFicheiros;
     private Login login;
+    private Database database = new Database();
 
     ClientMain(ClienteComm cli, TransferenciaFicheiros transferenciaFicheiros){
         this.cli = cli;
@@ -25,7 +27,7 @@ public class ClientMain {
         Msg msg = new Msg();
         String destino,mensagem;
 
-        msg.setEnvia(this.cli.utilizador.getUsername());
+        msg.setEnvia(this.cli.getUtilizador().getUsername());
         try {
             System.out.println("Indique o utilizador para o qual quer enviar mensagem:\n");
             destino = scanner.nextLine();
@@ -48,6 +50,8 @@ public class ClientMain {
         this.login.setUsername(scan.nextLine());
         System.out.print("Introduza a sua password: ");
         this.login.setPassword(scan.nextLine());
+
+        cli.getDatabase();
         return this.login;
     }
 
@@ -93,7 +97,7 @@ public class ClientMain {
         util.setNome(nome);
         util.setAtivo(true);
 
-        this.cli.getDatabase();
+        cli.getDatabase();
         return util;
     }
 

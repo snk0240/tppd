@@ -70,12 +70,10 @@ public class ClienteComm extends Thread {
 
     public void login(Login login)
     {
-        Object obj;
         try {
-            //oout.reset();
             this.oout.writeObject(login);
             this.oout.flush();
-
+            this.utilizador = (Utilizador) oin.readObject();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -95,7 +93,6 @@ public class ClienteComm extends Thread {
 
     public void enviamensagem(Msg msg){
         try {
-            this.oout.reset();
             this.oout.writeObject(msg);
             this.oout.flush();
 
@@ -104,10 +101,15 @@ public class ClienteComm extends Thread {
         }
     }
 
+    public Utilizador getUtilizador(){
+        return this.utilizador;
+    }
+
     public void getDatabase(){
         try{
             this.oout.writeObject("getDatabase");
             this.oout.flush();
+            this.database= (Database) this.oin.readObject();
         }catch(Exception e){
             e.printStackTrace();
         }

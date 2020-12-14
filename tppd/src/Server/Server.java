@@ -64,8 +64,6 @@ public class Server {
         return true;
     }
 
-
-
     public Utilizador ExecutaLogin(Login login, String ip){
         if(db.isConnected(login.getUsername())){
             return null;
@@ -73,13 +71,14 @@ public class Server {
         Utilizador utilizador = db.login(login.getUsername(),login.getPassword(),ip);
         int found=0;
         if(utilizador!=null){
-            System.out.println("Utilizador ligado");
             for(String user: users){
+                System.out.println("Utilizador esta no users");
                 if(user.equals(login.getUsername())){
                     found=1;
                 }
             }
             if(found==0) {
+                System.out.println("Utilizador nao esta no users");
                 users.add(login.getUsername());
                 return utilizador;
             }
@@ -139,21 +138,69 @@ public class Server {
         Database database = new Database();
         database.setUsers(this.db.getConnectedUsers());
         Map<String,List<Ficheiro>> ficheiros = new HashMap<>();
-        Map<String,List<Canal>> uploads = new HashMap<>();
-        Map<String,List<Msg>> downloads = new HashMap<>();
-        /*for(String user : database.getUsers()){
+        Map<String,List<Canal>> canais = new HashMap<>();
+        Map<String,List<Msg>> msgs = new HashMap<>();
+        for(String user : database.getUsers()){
             ficheiros.put(user,getUserFiles(user));
-            uploads.put(user,getUserUploads(user));
-            downloads.put(user,getUserDownloads(user));
+            canais.put(user,getUserChannels(user));
+            msgs.put(user,getUserMsgs(user));
         }
-        database.setDownloads(downloads);
+        database.setCanais(canais);
         database.setFicheiros(ficheiros);
-        database.setUploads(uploads);*/
+        database.setMsgs(msgs);
         return database;
     }
 
+    public List<Ficheiro> getUserFiles(String user){
+        Map<String,Long> mapa = db.getUserFiles(user);
+        List<Ficheiro> list = new ArrayList<>();
+        List<String> strings = new ArrayList<>();
+        strings.addAll(mapa.keySet());
+        List<Long> values = new ArrayList<>();
+        values.addAll(mapa.values());
+        for(int i=0;i<strings.size();i++){
+            Ficheiro f = new Ficheiro();
+            f.setNome(strings.get(i));
+            f.setTamanho(values.get(i));
+            list.add(f);
+        }
+        return list;
+    }
+
+    public List<Canal> getUserChannels(String user){
+        Map<String,String> mapa = db.getUserChannels(user);
+        List<Canal> list = new ArrayList<>();
+        List<String> strings = new ArrayList<>();
+        strings.addAll(mapa.keySet());
+        List<String> values = new ArrayList<>();
+        values.addAll(mapa.values());
+        for(int i=0;i<strings.size();i++){
+            Canal c = new Canal();
+            c.setNome(strings.get(i));
+            c.setPassword(values.get(i));
+            list.add(c);
+        }
+        return list;
+    }
+
+    public List<Msg> getUserMsgs(String user){
+        Map<String,String> mapa = db.getUserMsgs(user);
+        List<Msg> list = new ArrayList<>();
+        List<String> strings = new ArrayList<>();
+        strings.addAll(mapa.keySet());
+        List<String> values = new ArrayList<>();
+        values.addAll(mapa.values());
+        for(int i=0;i<strings.size();i++){
+            Msg m = new Msg();
+            m.setTexto(strings.get(i));
+            m.setRecebe(values.get(i));
+            list.add(m);
+        }
+        return list;
+    }
+
     public void shutdown() throws SQLException {
-        this.db.termina();
+        db.termina();
         System.out.println("depois do termina");
         this.db.shutdown();
     }

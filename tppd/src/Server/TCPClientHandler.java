@@ -66,9 +66,11 @@ public class TCPClientHandler extends Thread {
                         this.servidor.getMapSockets().put(user, this.streams);
                     }
                 }
+
                 else if(received instanceof Login){
                     String ip=s.getInetAddress().getHostAddress();
                     login=servidor.ExecutaLogin((Login)received,ip);
+                    System.out.println(login);
 
                     out.writeObject((Utilizador)login);
                     out.flush();
@@ -77,6 +79,14 @@ public class TCPClientHandler extends Thread {
                         servidor.getMapSockets().put(user,streams);
                     }
                 }
+
+                else if(received instanceof String){
+                    if(received.equals("getDatabase")){
+                        out.writeObject(servidor.getDatabase());
+                        out.flush();
+                    }
+                }
+
                 else if(received instanceof Msg){
                     Msg msg = (Msg)received;
                     System.out.println("recebi msg: "+msg.getTexto()+" "+msg.getEnvia()+" "+msg.getRecebe());
