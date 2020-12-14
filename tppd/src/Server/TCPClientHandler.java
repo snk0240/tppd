@@ -72,22 +72,22 @@ public class TCPClientHandler extends Thread {
                 }
 
                 else if(received instanceof Login){
-                    String ip=s.getInetAddress().getHostAddress();
-                    login=servidor.ExecutaLogin((Login)received,ip);
+                    String ip = this.s.getInetAddress().getHostAddress();
+                    login = this.servidor.ExecutaLogin((Login)received, ip);
                     System.out.println(login);
 
-                    out.writeObject((Utilizador)login);
-                    out.flush();
+                    this.out.writeObject((Utilizador)login);
+                    this.out.flush();
                     if(login!=null){
                         user = ((Utilizador) login).getUsername();
-                        servidor.getMapSockets().put(user,streams);
+                        this.servidor.getMapSockets().put(user, this.streams);
                     }
                 }
 
                 else if(received instanceof String){
                     if(received.equals("getDatabase")){
-                        out.writeObject(servidor.getDatabase());
-                        out.flush();
+                        this.out.writeObject(servidor.getDatabase());
+                        this.out.flush();
                     }
                 }
 
@@ -100,18 +100,18 @@ public class TCPClientHandler extends Thread {
                     else {*/
                         System.out.println("A encaminhar msg");
                         //dbServer.BroadcastMensagem(msg);
-                        mensagem = servidor.ForwardMensagem(msg);
-                        out.writeObject(mensagem);
-                        out.flush();
+                        mensagem = this.servidor.ForwardMensagem(msg);
+                        this.out.writeObject(mensagem);
+                        this.out.flush();
                     //}
 
-                    buff = new ByteArrayOutputStream();
-                    out = new ObjectOutputStream(buff);
-                    out.writeObject(msg);
+                    this.buff = new ByteArrayOutputStream();
+                    this.out = new ObjectOutputStream(this.buff);
+                    this.out.writeObject(msg);
 
-                    packet.setData(buff.toByteArray());
+                    this.packet.setData(this.buff.toByteArray());
 
-                    this.multicastSocket.send(packet);
+                    this.multicastSocket.send(this.packet);
                 }
                 else {
                 }

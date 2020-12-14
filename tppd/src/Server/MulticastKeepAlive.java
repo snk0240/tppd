@@ -11,7 +11,7 @@ public class MulticastKeepAlive extends Thread {
     private ObjectOutputStream out;
     private DatagramPacket packet;
 
-    boolean isAlive;
+    private boolean isAlive;
     private int portTCP;
 
     public MulticastKeepAlive(MulticastSocket multicastSocket, int portTCP) {
@@ -23,21 +23,21 @@ public class MulticastKeepAlive extends Thread {
     @Override
     public void run() {
 
-        while (isAlive) {
+        while (this.isAlive) {
             try {
-                packet = new DatagramPacket(new byte[MAX_SIZE], MAX_SIZE, InetAddress.getByName("230.0.0.0"), 5432);
+                this.packet = new DatagramPacket(new byte[MAX_SIZE], MAX_SIZE, InetAddress.getByName("230.0.0.0"), 5432);
             } catch (UnknownHostException e) {
                 e.printStackTrace();
             }
 
-            buff = new ByteArrayOutputStream();
+            this.buff = new ByteArrayOutputStream();
             try {
-                out = new ObjectOutputStream(buff);
-                out.writeObject(this.portTCP);
+                this.out = new ObjectOutputStream(this.buff);
+                this.out.writeObject(this.portTCP);
 
-                packet.setData(buff.toByteArray()); //Preencher com um write object
+                this.packet.setData(this.buff.toByteArray()); //Preencher com um write object
 
-                multicastSocket.send(packet);
+                this.multicastSocket.send(this.packet);
 
                 Thread.sleep(500);
             } catch (IOException e) {
@@ -46,5 +46,9 @@ public class MulticastKeepAlive extends Thread {
                 System.out.println("Erro no timeout");
             }
         }
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
     }
 }
