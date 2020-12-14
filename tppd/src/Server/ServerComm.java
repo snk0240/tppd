@@ -35,7 +35,7 @@ public class ServerComm extends Thread {
         this.ipDB = DB_ip;
         this.isAlive = true;
 
-        this.servidor=servidor;
+        this.servidor = servidor;
     }
 
     @Override
