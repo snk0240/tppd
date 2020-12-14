@@ -74,6 +74,7 @@ public class ClienteComm extends Thread {
             this.oout.writeObject(login);
             this.oout.flush();
             this.utilizador = (Utilizador) oin.readObject();
+            this.autenticado = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -110,6 +111,7 @@ public class ClienteComm extends Thread {
             this.oout.writeObject("getDatabase");
             this.oout.flush();
             this.database= (Database) this.oin.readObject();
+            System.out.println("recebi BD");
         }catch(Exception e){
             e.printStackTrace();
         }

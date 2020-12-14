@@ -167,7 +167,7 @@ public class ClientMain {
                     //cli.updateDatabase();
                     break;
                 case 6:
-                    //cli.getDatabase();
+                    cli.getDatabase();
                     break;
                 case 7:
                     cli.mostraDatabase();
