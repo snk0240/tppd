@@ -63,12 +63,12 @@ public class MulticastHandler extends Thread {
 
                 if (this.request instanceof Integer) {
                     boolean aux = false;
-                    if (newList.contains(this.request)) {
+                    if (this.newList.contains(this.request)) {
                         aux = true;
                     }
                     if (!aux) {
                         String s = this.request.toString();
-                        newList.add(Integer.parseInt(s));
+                        this.newList.add(Integer.parseInt(s));
                     }
                 }
 
