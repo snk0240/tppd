@@ -1,12 +1,12 @@
 package Client;
 
-import Dados.Database;
-import Dados.Login;
-import Dados.Msg;
-import Dados.Utilizador;
+import Dados.*;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ClienteComm extends Thread {
 
@@ -69,6 +69,8 @@ public class ClienteComm extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        ThreadClient tc = new ThreadClient();
+        tc.start();
     }
 
     public void login(Login login)
@@ -182,10 +184,6 @@ public class ClienteComm extends Thread {
         this.autenticado = autenticado;
     }
 
-    public void comecaThreadClient() {
-        threadClient = new ThreadClient(socket,this,oout,oin);
-        threadClient.start();
-    }
     public void comecaDownloadsThread(){
         transfere = new TransfereThread(utilizador.getPortoTCP(),this);
         transfere.setDaemon(true);
@@ -193,5 +191,96 @@ public class ClienteComm extends Thread {
     }
     public void setDatabase(Database d) {
         database=d;
+    }
+
+    public class ThreadClient extends Thread {
+        public ThreadClient(){ }
+        @Override
+        public void run() {
+            while (true) {
+                try {
+                    Object obj = oin.readObject();
+
+                    if (obj instanceof Msg) {
+                        System.out.println("Recebi objeto Msg\n");
+                        System.out.println(((Msg) obj).getTexto());
+
+                    } else if (obj instanceof String) {
+                        String str = (String) obj;
+                        System.out.println("Recebi objeto String: " + str + '\n');
+
+                        if (str.equalsIgnoreCase("Database Changed")) {
+                            System.out.println("A base de dados foi atualizada\n");
+                            oout.writeObject(new String("Database Update"));
+                        }
+                    } else if (obj instanceof Request) {
+                        Request request = (Request) obj;
+                        //EnviaFicheiroThread enviaFicheiroThread = new EnviaFicheiroThread(request,);
+                        //enviaFicheiroThread.setDaemon(true);
+                        //enviaFicheiroThread.start();
+                    } else if(obj instanceof DatabaseUpdate)
+                    {
+                        //cli.updatedDb = (DatabaseUpdate) obj;
+                        System.out.println("A minha base de dados interna foi atualizada\n");
+                    }
+                    else if(obj instanceof Boolean)
+                    {
+                        if((Boolean)obj)
+                        {
+                            System.out.println("Registo realizado com sucesso!\n");
+                            autenticado=true;
+                            //comecaDownloadsThread();
+                        }
+                        else
+                            System.out.println("Registo falhado...\n");
+                    }
+                    else if(obj instanceof Utilizador)
+                    {
+                        utilizador = (Utilizador) obj;
+
+                        System.out.println("Recebi obj Utilizador!\n");
+                        autenticado=true;
+                        //comecaDownloadsThread();
+                    }
+                    else if(obj instanceof ArrayStoreException){
+                        System.out.println("O login falhou...\n");
+                    }
+                    else if(obj instanceof Database){
+                        setDatabase((Database)obj);
+                    }
+                    else if(obj instanceof Map){
+                        Map<String, List<String>>mapa = (Map) obj;
+                        List<String>keys = new ArrayList<>();
+                        keys.addAll(mapa.keySet());
+                        if(keys.get(0).equals("utilizadores")){
+                            mostraUtilizadores(mapa.get("utilizadores"));
+                        }
+                        else if(keys.get(0).equals("canais")){
+                            mostraFicheiros(mapa.get("canais"));
+                        }
+                        else if(keys.get(0).equals("ficheiros")){
+                            mostraFicheiros(mapa.get("ficheiros"));
+                        }
+                        else if(keys.get(0).equals("msgs")){
+                            mostraFicheiros(mapa.get("msgs"));
+                        }
+                    }
+                    //oout.reset();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        public void mostraUtilizadores(List<String>users){
+            for(String s:users){
+                System.out.println(s);
+            }
+        }
+        public void mostraFicheiros(List<String> ficheiros){
+            for(String s: ficheiros){
+                System.out.println(s);
+            }
+        }
     }
 }

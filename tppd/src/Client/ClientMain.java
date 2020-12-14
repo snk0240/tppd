@@ -26,8 +26,7 @@ public class ClientMain {
         Scanner scanner = new Scanner(System.in);
         Msg msg = new Msg();
         String destino,mensagem;
-
-        msg.setEnvia(this.cli.getUtilizador().getUsername());
+        msg.setEnvia(cli.getUtilizador().getUsername());
         try {
             System.out.println("Indique o utilizador para o qual quer enviar mensagem:\n");
             destino = scanner.nextLine();
@@ -103,7 +102,6 @@ public class ClientMain {
 
     public void comeca()
     {
-        cli.comecaThreadClient();
         Scanner scan1 = new Scanner(System.in);
         int escolha;
         do {
@@ -118,14 +116,14 @@ public class ClientMain {
                     if(this.cli.autenticado)
                         System.out.println("Utilizador autenticado com sucesso!\n");
                     else
-                        System.out.println("Login falhou! Tente outra vez...\n");
+                        //System.out.println("Login falhou! Tente outra vez...\n");
                         break;
                 case 2:
                     this.cli.registo(regista());
                     if(this.cli.isAutenticado())
                         System.out.println("Utilizador registado com sucesso!\n");
                     else
-                        System.out.println("Registo falhou! Tente outra vez...\n");
+                        //System.out.println("Registo falhou! Tente outra vez...\n");
                         break;
                 case 3:
                     System.exit(0);
