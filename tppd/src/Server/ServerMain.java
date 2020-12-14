@@ -13,6 +13,7 @@ public class ServerMain {
         int portTCP;
         String ipDB;
         Server servidor;
+        ServerComm s;
 
         if (args.length != 3) {
             //portos de escuta tcp e udp e maquina da sua BD
@@ -28,7 +29,7 @@ public class ServerMain {
 
             servidor = new Server(ipDB, portTCP);
 
-            ServerComm s = new ServerComm(portUDP, portTCP, ipDB, servidor);
+            s = new ServerComm(portUDP, portTCP, ipDB, servidor);
             s.start();
 
             System.out.println("Welcome to Server, write 'exit' to terminate!\n");

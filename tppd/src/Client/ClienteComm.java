@@ -22,7 +22,7 @@ public class ClienteComm extends Thread {
     private TransferenciaFicheiros transferenciaFicheiros;
     boolean autenticado = false;
     private Database database;
-    private Utilizador utilizador;
+    Utilizador utilizador;
 
     private byte[] data1 = new byte[1024];
     private byte[] data2 = new byte[1024];
