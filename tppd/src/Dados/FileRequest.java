@@ -8,7 +8,6 @@ public class FileRequest implements Serializable {
     private String filename;
 
     public FileRequest(){
-
     }
 
     public FileRequest(String filename) {

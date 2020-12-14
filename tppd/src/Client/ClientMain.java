@@ -116,16 +116,16 @@ public class ClientMain {
                     if(this.cli.autenticado)
                         System.out.println("Utilizador autenticado com sucesso!\n");
                     else
-                        //System.out.println("Login falhou! Tente outra vez...\n");
                         break;
                 case 2:
                     this.cli.registo(regista());
                     if(this.cli.isAutenticado())
                         System.out.println("Utilizador registado com sucesso!\n");
                     else
-                        //System.out.println("Registo falhou! Tente outra vez...\n");
                         break;
                 case 3:
+                    if(this.cli.autenticado)
+                        this.cli.sai();
                     System.exit(0);
             }
             try {
@@ -154,7 +154,7 @@ public class ClientMain {
                     cli.enviamensagem(getmensagem());
                     break;
                 case 2:
-                    //cli.listautilizadores();
+                    cli.listautilizadores();
                     break;
                 case 3:
                     //cli.listaficheiros();

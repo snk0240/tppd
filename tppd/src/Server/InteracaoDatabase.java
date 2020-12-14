@@ -56,7 +56,6 @@ public class InteracaoDatabase {
             this.rs = this.statement.executeQuery(this.query);
             while (this.rs.next()) {
                 try {
-                    System.out.println("AQUI!");
                     this.query = "UPDATE "+this.DB_NAME+".user SET ativo = 0 WHERE username = '"+rs.getString("username")+"'";
                     this.statement = this.connection.createStatement();
                     this.statement.executeUpdate(this.query);
@@ -184,7 +183,6 @@ public class InteracaoDatabase {
 
     public boolean setDesligado(String username) {
         try {
-            System.out.println("AQUI!");
             this.query = "UPDATE "+this.DB_NAME+".user SET ativo = 0 WHERE username = '"+username+"'";
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(this.query);
@@ -197,7 +195,7 @@ public class InteracaoDatabase {
 
     public void setLigado(String username) {
         try {
-            this.query = "UPDATE "+this.DB_NAME+".user SET o ='" + 1 + "' where username='"+username+"'";
+            this.query = "UPDATE "+this.DB_NAME+".user SET o ='" + 1 + "' WHERE username='"+username+"'";
             this.statement = this.connection.createStatement();
             this.statement.executeUpdate(this.query);
         } catch (Exception e) {
@@ -237,7 +235,7 @@ public class InteracaoDatabase {
     }
 
     public int selectPortoUdp(String username){
-        String query = "select portoudp from "+DB_NAME+".user where username ='"+username+"'";
+        String query = "SELECT udp_port FROM "+DB_NAME+".user WHERE username ='"+username+"'";
         try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
@@ -251,9 +249,9 @@ public class InteracaoDatabase {
         return 0;
     }
 
-    public Ficheiro getFileInfo(String nome) {
-        this.query = "select * from mydb.ficheiro where nome ='" + nome + "'";
-        List<String> downloads = new ArrayList<>();
+    public Ficheiro getFileInfo(String username) {
+        this.query = "SELECT * FROM "+DB_NAME+".ficheiro WHERE username ='" + username + "'";
+        List<String> ficheiros = new ArrayList<>();
         try {
             this.statement = this.connection.createStatement();
             this.rs = this.statement.executeQuery(query);
@@ -278,13 +276,13 @@ public class InteracaoDatabase {
             ResultSet rs = statement.executeQuery(query);
             while (rs.next()) {
                 String name,pass;
-                pass =rs.getString("password");
-                name =rs.getString("username");
+                pass = rs.getString("password");
+                name = rs.getString("username");
                 if (name.equals(username) && pass.equals(password)) {
-                    String query2 = "update "+this.DB_NAME+".user set ativo ="+1+" where username = '"+username+"'";
+                    String query2 = "UPDATE "+this.DB_NAME+".user SET ativo ="+1+" WHERE username = '"+username+"'";
                     Statement stmt = connection.createStatement();
                     stmt.executeUpdate(query2);
-                    String query3 = "update "+this.DB_NAME+".user set ip='"+ip+"' where username = '"+username+"'";
+                    String query3 = "UPDATE "+this.DB_NAME+".user SET ip='"+ip+"' WHERE username = '"+username+"'";
                     Statement stmt2 = connection.createStatement();
                     stmt2.executeUpdate(query3);
 
@@ -307,7 +305,7 @@ public class InteracaoDatabase {
     }
 
     public InetAddress selectIp(String username){
-        String query = "select ip from "+DB_NAME+".user where username ='"+username+"'";
+        String query = "SELECT ip FROM "+DB_NAME+".user WHERE username ='"+username+"'";
         try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(query);
@@ -322,7 +320,7 @@ public class InteracaoDatabase {
     }
 
     public Map<String,Long> getUserFiles(String username){
-        String query = "select * from "+DB_NAME+".ficheiro";
+        String query = "SELECT * FROM "+DB_NAME+".ficheiro";
         Map<String,Long> files = new HashMap<>();
         String nome = null;
         Long tamanho;
@@ -344,7 +342,7 @@ public class InteracaoDatabase {
     }
 
     public Map<String,String> getUserChannels(String username){
-        String query = "select * from "+DB_NAME+".canal";
+        String query = "SELECT * FROM "+DB_NAME+".canal";
         Map<String,String> channels = new HashMap<>();
         String nome = null;
         String password = null;
@@ -366,7 +364,7 @@ public class InteracaoDatabase {
     }
 
     public Map<String,String> getUserMsgs(String username){
-        String query = "select * from "+DB_NAME+".msg";
+        String query = "SELECT * FROM "+DB_NAME+".msg";
         Map<String,String> msgs = new HashMap<>();
         String texto = null;
         String recebe = null;

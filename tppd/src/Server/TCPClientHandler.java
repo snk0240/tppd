@@ -57,7 +57,6 @@ public class TCPClientHandler extends Thread {
 
         while (this.isAlive) {
             try {
-                // receive the answer from client
                 received = this.in.readObject();
 
                 if(received instanceof Utilizador){
@@ -85,6 +84,12 @@ public class TCPClientHandler extends Thread {
                 }
 
                 else if(received instanceof String){
+                    if(received=="sai"){
+                        this.servidor.sai();
+                    }
+                }
+
+                else if(received instanceof String){
                     if(received.equals("getDatabase")){
                         this.out.writeObject(servidor.getDatabase());
                         this.out.flush();
@@ -95,7 +100,6 @@ public class TCPClientHandler extends Thread {
                     Msg msg = (Msg)received;
                     System.out.println("recebi msg: "+msg.getTexto()+" "+msg.getEnvia()+" "+msg.getRecebe());
                     System.out.println("A encaminhar msg");
-                    //dbServer.BroadcastMensagem(msg);
                     mensagem = this.servidor.ForwardMensagem(msg);
                     this.out.writeObject(mensagem);
                     this.out.flush();

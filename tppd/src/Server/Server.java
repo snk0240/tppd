@@ -54,8 +54,6 @@ public class Server {
     public Boolean registaUtilizador(Utilizador utilizador) {
 
         if(this.db.isRegistered(utilizador.getUsername())){
-            //setChanged();
-            //notifyObservers(false);
             return false;
         }
         this.db.register(utilizador);
@@ -72,13 +70,11 @@ public class Server {
         int found=0;
         if(utilizador!=null){
             for(String user: users){
-                System.out.println("Utilizador esta no users");
                 if(user.equals(login.getUsername())){
                     found=1;
                 }
             }
             if(found==0) {
-                System.out.println("Utilizador nao esta no users");
                 users.add(login.getUsername());
                 return utilizador;
             }
@@ -117,17 +113,6 @@ public class Server {
                     e.printStackTrace();
                 }
                 return true;
-            }
-            else{
-                try { // avisa quem quer enviar a msg q o utilizador destino n esta ligado
-                    /*ObjectOutputStream oout = new ObjectOutputStream(source.getOutputStream());
-                    oout.writeObject("Utilizador destino n esstá ligado");
-                    oout.flush();*/
-                    return false;
-                    //only return false
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
             }
         }
 
@@ -201,7 +186,10 @@ public class Server {
 
     public void shutdown() throws SQLException {
         db.termina();
-        System.out.println("depois do termina");
         this.db.shutdown();
+    }
+
+    public void sai() {
+        db.termina();
     }
 }

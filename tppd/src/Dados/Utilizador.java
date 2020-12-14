@@ -50,6 +50,10 @@ public class Utilizador implements Serializable {
                 '}';
     }
 
+    public String toDB(){
+        return "("+portoTCP+",'"+nome+"','"+username+"','"+password+"','"+ip+"',"+portoUDP+","+portoTCP+","+contador+",'"+imagem+"')";
+    }
+
     public String getNome() {
         return nome;
     }
@@ -112,9 +116,5 @@ public class Utilizador implements Serializable {
 
     public void setImagem(String imagem) {
         this.imagem = imagem;
-    }
-
-    public String toDB(){
-        return "("+portoTCP+",'"+nome+"','"+username+"','"+password+"','"+ip+"',"+portoUDP+","+portoTCP+","+contador+",'"+imagem+"')";
     }
 }

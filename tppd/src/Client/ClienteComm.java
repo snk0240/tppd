@@ -19,15 +19,12 @@ public class ClienteComm extends Thread {
     private ObjectInputStream oin;
     private ObjectOutputStream oout;
 
-    ThreadClient threadClient;
-    TransfereThread transfere;
-
+    private TransfereThread transfere;
     private TransferenciaFicheiros transferenciaFicheiros;
     boolean autenticado = false;
     private Database database;
     Utilizador utilizador;
 
-    private byte[] data1 = new byte[1024];
     private byte[] data2 = new byte[1024];
 
     public ClienteComm(InetAddress ip, int udp, TransferenciaFicheiros transferencia){
@@ -83,10 +80,17 @@ public class ClienteComm extends Thread {
         }
     }
     public void registo(Utilizador utilizador){
-        Boolean autenticado = false;
         try {
-            //this.oout.reset();
             this.oout.writeObject(utilizador);
+            this.oout.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sai(){
+        try {
+            this.oout.writeObject("sai");
             this.oout.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -115,28 +119,38 @@ public class ClienteComm extends Thread {
         }
     }
 
+    public void listautilizadores(){
+        try {
+            oout.writeObject("listaUsers");
+            oout.flush();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
     public void mostraDatabase(){
-        for(String user: database.getUsers()){
-            System.out.println("user: "+user+"\r");
-            System.out.println("utilizadores: "+user+"\r");
-            if(database.getMsgs().size()>0)
-                for(int i=0;i<database.getMsgs().size();i++){
-                    System.out.print(database.getMsgs().get(i)+"; ");
+        for(String user: database.getUsers()) {
+            System.out.println("user: " + user + "\r");
+            System.out.println("utilizadores: " + user + "\r");
+            if (database.getMsgs().size() > 0)
+                for (int i = 0; i < database.getMsgs().size(); i++) {
+                    System.out.print(database.getMsgs().get(i) + "; ");
                 }
             System.out.println("canais: \r");
-            if(database.getCanais().size()>0)
-                for(int i=0;i<database.getCanais().size();i++){
-                    System.out.print(database.getCanais().get(i)+"; ");
+            if (database.getCanais().size() > 0)
+                for (int i = 0; i < database.getCanais().size(); i++) {
+                    System.out.print(database.getCanais().get(i) + "; ");
                 }
             System.out.println("ficheiros: \r");
-            if(database.getFicheiros().size()>0)
-                for(int i=0;i<database.getFicheiros().size();i++){
-                    System.out.print(database.getFicheiros().get(i)+"; ");
+            if (database.getFicheiros().size() > 0)
+                for (int i = 0; i < database.getFicheiros().size(); i++) {
+                    System.out.print(database.getFicheiros().get(i) + "; ");
                 }
             System.out.println("msgs: \r");
-            if(database.getMsgs().size()>0)
-                for(int i=0;i<database.getMsgs().size();i++){
-                    System.out.print(database.getMsgs().get(i)+"; ");
+            if (database.getMsgs().size() > 0)
+                for (int i = 0; i < database.getMsgs().size(); i++) {
+                    System.out.print(database.getMsgs().get(i) + "; ");
                 }
         }
     }
@@ -189,6 +203,7 @@ public class ClienteComm extends Thread {
         transfere.setDaemon(true);
         transfere.start();
     }
+
     public void setDatabase(Database d) {
         database=d;
     }
@@ -218,12 +233,7 @@ public class ClienteComm extends Thread {
                         //EnviaFicheiroThread enviaFicheiroThread = new EnviaFicheiroThread(request,);
                         //enviaFicheiroThread.setDaemon(true);
                         //enviaFicheiroThread.start();
-                    } else if(obj instanceof DatabaseUpdate)
-                    {
-                        //cli.updatedDb = (DatabaseUpdate) obj;
-                        System.out.println("A minha base de dados interna foi atualizada\n");
-                    }
-                    else if(obj instanceof Boolean)
+                    } else if(obj instanceof Boolean)
                     {
                         if((Boolean)obj)
                         {
@@ -265,7 +275,6 @@ public class ClienteComm extends Thread {
                             mostraFicheiros(mapa.get("msgs"));
                         }
                     }
-                    //oout.reset();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

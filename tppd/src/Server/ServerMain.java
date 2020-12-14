@@ -35,7 +35,6 @@ public class ServerMain {
             System.out.println("Welcome to Server, write 'exit' to terminate!\n");
             Scanner scan = new Scanner(System.in);
 
-            //recebe mensagens da command line
             while (true) {
                 System.out.print("> ");
                 String msg = scan.next();

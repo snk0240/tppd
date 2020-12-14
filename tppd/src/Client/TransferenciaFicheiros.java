@@ -23,10 +23,8 @@ public class TransferenciaFicheiros {
             int nbytes=0;
 
             while ((nbytes = in.read(fileChunk)) > 0) {
-                //System.out.println("Recebido o bloco n. " + ++contador + " com " + nbytes + " bytes.");
                 localFileOutputStream.write(fileChunk, 0, nbytes);
                 localFileOutputStream.flush();
-                //System.out.println("Acrescentados " + nbytes + " bytes ao ficheiro " + localFilePath+ ".");
             }
             localFileOutputStream.close();
         }catch(Exception e){
@@ -41,7 +39,7 @@ public class TransferenciaFicheiros {
 
         byte []fileChunk = new byte[MAX_SIZE];
         int nbytes;
-        //ObjectOutputStream oout=null;
+
         OutputStream outputStream;
         File path = new File(pathEnviar);
 
@@ -57,25 +55,18 @@ public class TransferenciaFicheiros {
             Socket socket = new Socket(ip,porto);
             ObjectOutputStream oout =new ObjectOutputStream(socket.getOutputStream());
             oout.writeObject(filename);
-            //oout.close();
 
             outputStream = socket.getOutputStream();
 
-            //TransferableObject t = new TransferableObject();
             requestedFileInputStream = new FileInputStream(requestedCanonicalFilePath);
+
             System.out.println("File " + requestedCanonicalFilePath + " open for read");
-            //byte[] bytes= new byte[MAX_SIZE*10000];
             int pos =0;
             while ((nbytes = requestedFileInputStream.read(fileChunk)) > 0) {
-                //System.arraycopy(fileChunk,0,bytes,pos,fileChunk.length);
                 outputStream.write(fileChunk,0,nbytes);
                 outputStream.flush();
             }
 
-            //t.setBytes(bytes);
-            //t.setFilename(filename);
-            //oout.writeObject(t);
-            //oout.flush();
             System.out.println("Transfer sucssesfull");
             if(requestedFileInputStream != null) {
                 try {
