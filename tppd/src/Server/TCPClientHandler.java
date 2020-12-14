@@ -94,16 +94,11 @@ public class TCPClientHandler extends Thread {
                 else if(received instanceof Msg){
                     Msg msg = (Msg)received;
                     System.out.println("recebi msg: "+msg.getTexto()+" "+msg.getEnvia()+" "+msg.getRecebe());
-                    /*if(msg.getRecebe()==null){
-                        server.ClientDisconnected(msg.getEnvia());
-                    }
-                    else {*/
-                        System.out.println("A encaminhar msg");
-                        //dbServer.BroadcastMensagem(msg);
-                        mensagem = this.servidor.ForwardMensagem(msg);
-                        this.out.writeObject(mensagem);
-                        this.out.flush();
-                    //}
+                    System.out.println("A encaminhar msg");
+                    //dbServer.BroadcastMensagem(msg);
+                    mensagem = this.servidor.ForwardMensagem(msg);
+                    this.out.writeObject(mensagem);
+                    this.out.flush();
 
                     this.buff = new ByteArrayOutputStream();
                     this.out = new ObjectOutputStream(this.buff);

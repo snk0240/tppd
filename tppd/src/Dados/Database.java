@@ -19,7 +19,7 @@ public class Database implements Serializable {
     }
 
     public List<String> getUsers() {
-        return users;
+        return this.users;
     }
 
     public void setUsers(List<String> users) {
@@ -27,7 +27,7 @@ public class Database implements Serializable {
     }
 
     public Map<String, List<Canal>> getCanais() {
-        return canais;
+        return this.canais;
     }
 
     public void setCanais(Map<String, List<Canal>> canais) {
@@ -35,7 +35,7 @@ public class Database implements Serializable {
     }
 
     public Map<String, List<Msg>> getMsgs() {
-        return msgs;
+        return this.msgs;
     }
 
     public void setMsgs(Map<String, List<Msg>> msgs) {
@@ -43,19 +43,19 @@ public class Database implements Serializable {
     }
 
     public Map<String, List<Ficheiro>> getFicheiros() {
-        return ficheiros;
+        return this.ficheiros;
     }
 
     public void setFicheiros(Map<String, List<Ficheiro>> ficheiros) {
         this.ficheiros = ficheiros;
     }
 
-    public List<Ficheiro> getUserFi(String user){
+    public List<Ficheiro> getUserFicheiro(String user){
         if(users.contains(user)){
             return null;
         }
         else{
-            return ficheiros.get(user);
+            return this.ficheiros.get(user);
         }
     }
 
@@ -64,7 +64,7 @@ public class Database implements Serializable {
             return null;
         }
         else{
-            return canais.get(user);
+            return this.canais.get(user);
         }
     }
 
@@ -73,7 +73,7 @@ public class Database implements Serializable {
             return null;
         }
         else{
-            return msgs.get(user);
+            return this.msgs.get(user);
         }
     }
 }

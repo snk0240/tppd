@@ -103,6 +103,7 @@ public class ClientMain {
 
     public void comeca()
     {
+        cli.comecaThreadClient();
         Scanner scan1 = new Scanner(System.in);
         int escolha;
         do {

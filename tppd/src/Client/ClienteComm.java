@@ -19,6 +19,9 @@ public class ClienteComm extends Thread {
     private ObjectInputStream oin;
     private ObjectOutputStream oout;
 
+    ThreadClient threadClient;
+    TransfereThread transfere;
+
     private TransferenciaFicheiros transferenciaFicheiros;
     boolean autenticado = false;
     private Database database;
@@ -73,8 +76,6 @@ public class ClienteComm extends Thread {
         try {
             this.oout.writeObject(login);
             this.oout.flush();
-            this.utilizador = (Utilizador) oin.readObject();
-            this.autenticado = true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -85,9 +86,7 @@ public class ClienteComm extends Thread {
             //this.oout.reset();
             this.oout.writeObject(utilizador);
             this.oout.flush();
-            this.autenticado = (Boolean)oin.readObject();
-            if(this.autenticado == true) this.utilizador = utilizador;
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -96,8 +95,7 @@ public class ClienteComm extends Thread {
         try {
             this.oout.writeObject(msg);
             this.oout.flush();
-
-        } catch (IOException | NullPointerException  e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -110,8 +108,6 @@ public class ClienteComm extends Thread {
         try{
             this.oout.writeObject("getDatabase");
             this.oout.flush();
-            this.database= (Database) this.oin.readObject();
-            System.out.println("recebi BD");
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -120,17 +116,26 @@ public class ClienteComm extends Thread {
     public void mostraDatabase(){
         for(String user: database.getUsers()){
             System.out.println("user: "+user+"\r");
-            for(int i=0;i<database.getUserCanal(user).size();i++){
-                System.out.print(database.getUserCanal(user).get(i)+"; ");
-            }
-            System.out.println("donwloads: \r");
-            for(int i=0;i<database.getUserFi(user).size();i++){
-                System.out.print(database.getUserFi(user).get(i)+"; ");
-            }
-            System.out.println("uploads: \r");
-            for(int i=0;i<database.getUserMsg(user).size();i++){
-                System.out.print(database.getUserMsg(user).get(i)+"; ");
-            }
+            System.out.println("utilizadores: "+user+"\r");
+            if(database.getMsgs().size()>0)
+                for(int i=0;i<database.getMsgs().size();i++){
+                    System.out.print(database.getMsgs().get(i)+"; ");
+                }
+            System.out.println("canais: \r");
+            if(database.getCanais().size()>0)
+                for(int i=0;i<database.getCanais().size();i++){
+                    System.out.print(database.getCanais().get(i)+"; ");
+                }
+            System.out.println("ficheiros: \r");
+            if(database.getFicheiros().size()>0)
+                for(int i=0;i<database.getFicheiros().size();i++){
+                    System.out.print(database.getFicheiros().get(i)+"; ");
+                }
+            System.out.println("msgs: \r");
+            if(database.getMsgs().size()>0)
+                for(int i=0;i<database.getMsgs().size();i++){
+                    System.out.print(database.getMsgs().get(i)+"; ");
+                }
         }
     }
 
@@ -175,5 +180,18 @@ public class ClienteComm extends Thread {
 
     public void setAutenticado(boolean autenticado) {
         this.autenticado = autenticado;
+    }
+
+    public void comecaThreadClient() {
+        threadClient = new ThreadClient(socket,this,oout,oin);
+        threadClient.start();
+    }
+    public void comecaDownloadsThread(){
+        transfere = new TransfereThread(utilizador.getPortoTCP(),this);
+        transfere.setDaemon(true);
+        transfere.start();
+    }
+    public void setDatabase(Database d) {
+        database=d;
     }
 }

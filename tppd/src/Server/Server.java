@@ -91,9 +91,9 @@ public class Server {
         if(users.contains(msg.getRecebe())){ // verifica se está no servidor
             dest = mapSockets.get(msg.getRecebe()).getSocket();
             try {
-                ObjectOutputStream oout = mapSockets.get(msg.getRecebe()).getOout();
-                oout.writeObject(msg);
-                oout.flush();
+                ObjectOutputStream pout = mapSockets.get(msg.getRecebe()).getOout();
+                pout.writeObject(msg);
+                pout.flush();
                 return true;
             }catch(Exception e){
                 e.printStackTrace();
