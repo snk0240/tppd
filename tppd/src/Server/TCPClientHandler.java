@@ -139,4 +139,12 @@ public class TCPClientHandler extends Thread {
         this.out.writeObject(obj);
         this.out.flush();
     }
+
+    public ObjectOutputStream getOut() {
+        return out;
+    }
+
+    public void setOut(ObjectOutputStream out) {
+        this.out = out;
+    }
 }
