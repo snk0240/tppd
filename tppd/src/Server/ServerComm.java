@@ -1,7 +1,5 @@
 package Server;
 
-import Dados.Utilizador;
-
 import java.io.*;
 import java.net.*;
 import java.sql.SQLException;
@@ -17,7 +15,7 @@ public class ServerComm extends Thread {
 
     private MulticastSocket multicastSocket;
     private DatagramSocket datagramSocket;
-    private ServerSocket server;
+    private ServerSocket serverSocket;
     private Socket nextClient;
 
     private final int MAX_CONNECTIONS = 10;
@@ -43,10 +41,10 @@ public class ServerComm extends Thread {
         try {
             this.multicastSocket = new MulticastSocket(this.portMulticast);
             this.multicastSocket.joinGroup(InetAddress.getByName(this.groupIP));
-            this.multicastHandler = new MulticastHandler(this.multicastSocket, this.portTCP);
+            this.multicastHandler = new MulticastHandler(this.multicastSocket, this.portTCP, this.serverSocket);
             this.multicastHandler.start();
 
-            this.server = new ServerSocket(this.portTCP, this.MAX_CONNECTIONS);
+            this.serverSocket = new ServerSocket(this.portTCP, this.MAX_CONNECTIONS);
             //System.out.println("Server started");
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,9 +55,9 @@ public class ServerComm extends Thread {
 
         while (this.isAlive) {
             try {
-                this.nextClient = this.server.accept();
+                this.nextClient = this.serverSocket.accept();
 
-                this.tcpClientHandler = new TCPClientHandler(this.nextClient, this.portTCP, this.servidor);
+                this.tcpClientHandler = new TCPClientHandler(this.nextClient, this.portTCP, this.servidor, this.multicastSocket);
                 this.tcpClientHandler.start();
             } catch (BindException e) {
                 System.err.println("Service already running on port " + this.portTCP);
@@ -110,8 +108,8 @@ public class ServerComm extends Thread {
         if (this.nextClient != null)
             this.nextClient.close();
 
-        if (this.server != null)
-            this.server.close();
+        if (this.serverSocket != null)
+            this.serverSocket.close();
 
         if (this.multicastSocket != null)
             //ao fechar o multicastsocket vai criar SocketException no entanto é um procedimento necessário para terminar a thread

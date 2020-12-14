@@ -1,8 +1,12 @@
 package Server;
 
+import Dados.*;
+
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class MulticastHandler extends Thread {
@@ -17,6 +21,7 @@ public class MulticastHandler extends Thread {
     private ObjectOutputStream out;
     private Object request;
     private MsgMulticast msgMulticast;
+    private ServerSocket serverSocket;
 
     private int portTCP;
     private boolean isAlive;
@@ -26,8 +31,9 @@ public class MulticastHandler extends Thread {
     private MulticastKeepAlive multicastKeepAlive;
     private VerifyAliveList verifyAliveList;
 
-    public MulticastHandler(MulticastSocket multicastSocket, int portTCP) {
+    public MulticastHandler(MulticastSocket multicastSocket, int portTCP, ServerSocket serverSocket) {
         this.multicastSocket = multicastSocket;
+        this.serverSocket = serverSocket;
         this.portTCP = portTCP;
         this.isAlive = true;
         this.newList = new ArrayList<>();
@@ -57,19 +63,23 @@ public class MulticastHandler extends Thread {
 
                 if (this.request instanceof Integer) {
                     boolean aux = false;
-                    if (newList.contains(this.request)) {
+                    if (this.newList.contains(this.request)) {
                         aux = true;
                     }
                     if (!aux) {
                         String s = this.request.toString();
-                        newList.add(Integer.parseInt(s));
+                        this.newList.add(Integer.parseInt(s));
                     }
+                }
+
+                if(this.request instanceof Msg) {
+                    System.out.println("Apanhei uma mensagem para dissiminar");
                 }
 
                 if(this.request instanceof MsgMulticast) {
                     this.msgMulticast = (MsgMulticast) this.request;
 
-                    if (msgMulticast.tipoMsg.toUpperCase().contains(this.NEW_USER)) {
+                    if (this.msgMulticast.tipoMsg.toUpperCase().contains(this.NEW_USER)) {
                         //rebece informacao de novo user
 
                         /*this.buff = new ByteArrayOutputStream();
@@ -80,12 +90,12 @@ public class MulticastHandler extends Thread {
 
                         multicastSocket.send(receivingPacket);*/
                     }
-                    else if (msgMulticast.tipoMsg.toUpperCase().contains(this.SERVER_SHUTDOWN)) {
+                    else if (this.msgMulticast.tipoMsg.toUpperCase().contains(this.SERVER_SHUTDOWN)) {
                         if(this.msgMulticast.port != this.portTCP) {
                             this.oldList.remove(this.msgMulticast.port);
                         }
                     }
-                    else if (msgMulticast.tipoMsg.toUpperCase().contains(this.NEW_SERVER)) {
+                    else if (this.msgMulticast.tipoMsg.toUpperCase().contains(this.NEW_SERVER)) {
                         //recebe informação de um novo server
                     }
                 }
@@ -98,7 +108,7 @@ public class MulticastHandler extends Thread {
 
     public void shutdown() throws IOException, InterruptedException {
         this.isAlive = false;
-        this.multicastKeepAlive.isAlive = false;
+        this.multicastKeepAlive.setAlive(false);
 
         if(this.multicastSocket != null)
             //ao fechar o multicastsocket vai criar SocketException no entanto é um procedimento necessário para terminar a thread
