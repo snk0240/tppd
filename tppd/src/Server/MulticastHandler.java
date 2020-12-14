@@ -1,8 +1,11 @@
 package Server;
 
+import Dados.*;
+
 import java.io.*;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class MulticastHandler extends Thread {
@@ -66,10 +69,14 @@ public class MulticastHandler extends Thread {
                     }
                 }
 
+                if(this.request instanceof Msg) {
+                    System.out.println("Apanhei uma mensagem para dissiminar");
+                }
+
                 if(this.request instanceof MsgMulticast) {
                     this.msgMulticast = (MsgMulticast) this.request;
 
-                    if (msgMulticast.tipoMsg.toUpperCase().contains(this.NEW_USER)) {
+                    if (this.msgMulticast.tipoMsg.toUpperCase().contains(this.NEW_USER)) {
                         //rebece informacao de novo user
 
                         /*this.buff = new ByteArrayOutputStream();
@@ -80,12 +87,12 @@ public class MulticastHandler extends Thread {
 
                         multicastSocket.send(receivingPacket);*/
                     }
-                    else if (msgMulticast.tipoMsg.toUpperCase().contains(this.SERVER_SHUTDOWN)) {
+                    else if (this.msgMulticast.tipoMsg.toUpperCase().contains(this.SERVER_SHUTDOWN)) {
                         if(this.msgMulticast.port != this.portTCP) {
                             this.oldList.remove(this.msgMulticast.port);
                         }
                     }
-                    else if (msgMulticast.tipoMsg.toUpperCase().contains(this.NEW_SERVER)) {
+                    else if (this.msgMulticast.tipoMsg.toUpperCase().contains(this.NEW_SERVER)) {
                         //recebe informação de um novo server
                     }
                 }

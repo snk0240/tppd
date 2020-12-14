@@ -59,7 +59,7 @@ public class ServerComm extends Thread {
             try {
                 this.nextClient = this.server.accept();
 
-                this.tcpClientHandler = new TCPClientHandler(this.nextClient, this.portTCP, this.servidor);
+                this.tcpClientHandler = new TCPClientHandler(this.nextClient, this.portTCP, this.servidor, this.multicastSocket);
                 this.tcpClientHandler.start();
             } catch (BindException e) {
                 System.err.println("Service already running on port " + this.portTCP);

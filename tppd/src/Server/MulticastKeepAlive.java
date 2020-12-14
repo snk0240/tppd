@@ -7,9 +7,9 @@ public class MulticastKeepAlive extends Thread {
     private static int MAX_SIZE = 1000;
 
     private MulticastSocket multicastSocket = null;
-    ByteArrayOutputStream buff;
-    ObjectOutputStream out;
-    DatagramPacket packet;
+    private ByteArrayOutputStream buff;
+    private ObjectOutputStream out;
+    private DatagramPacket packet;
 
     boolean isAlive;
     private int portTCP;

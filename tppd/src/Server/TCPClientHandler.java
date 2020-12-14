@@ -5,9 +5,12 @@ import Dados.Msg;
 import Dados.Streams;
 import Dados.Utilizador;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.DatagramPacket;
+import java.net.MulticastSocket;
 import java.net.Socket;
 import java.util.Observable;
 import java.util.Observer;
@@ -19,19 +22,20 @@ public class TCPClientHandler extends Thread {
 
     private ObjectInputStream in;
     private ObjectOutputStream out;
-
-    private ObjectOutputStream notificationOut;
-    private Socket notification;
+    private ByteArrayOutputStream buff;
+    private DatagramPacket packet;
 
     private Server servidor;
     private int tcp_port;
     private Streams streams;
+    private MulticastSocket multicastSocket;
 
-    public TCPClientHandler(Socket s, int tcp_port, Server server) {
+    public TCPClientHandler(Socket s, int tcp_port, Server server, MulticastSocket multicastSocket) {
         this.s = s;
         this.isAlive = true;
         this.servidor = server;
         this.tcp_port = tcp_port;
+        this.multicastSocket = multicastSocket;
         try {
             this.out = new ObjectOutputStream(s.getOutputStream());
             this.in = new ObjectInputStream(s.getInputStream());
@@ -100,6 +104,14 @@ public class TCPClientHandler extends Thread {
                         out.writeObject(mensagem);
                         out.flush();
                     //}
+
+                    buff = new ByteArrayOutputStream();
+                    out = new ObjectOutputStream(buff);
+                    out.writeObject(msg);
+
+                    packet.setData(buff.toByteArray());
+
+                    this.multicastSocket.send(packet);
                 }
                 else {
                 }
@@ -112,17 +124,6 @@ public class TCPClientHandler extends Thread {
     public void shutdown() {
         this.isAlive = false;
 
-        /*if(this.notification != null){
-            try {
-                synchronized(this.notification){
-                    //notificationOut.writeObject(new ServerShutdown());
-                    this.notificationOut.flush();
-                }
-            } catch (IOException e) {
-                System.err.println("Couldn't send shutdown packet: " + e);
-            }
-        }*/
-
         try {
             if(this.s != null) {
                 this.in.close();
@@ -132,27 +133,10 @@ public class TCPClientHandler extends Thread {
         } catch (IOException e) {
             System.err.println("Could not close the socket!");
         }
-
-        /*try {
-            if(this.notification != null)
-                this.notification.close();
-        } catch (IOException e) {
-            System.err.println("Could not close the socket!");
-        }*/
     }
 
     private synchronized void writeObject(Object obj) throws IOException {
         this.out.writeObject(obj);
         this.out.flush();
-    }
-
-    public void notify(Object arg){
-        try{
-            synchronized(this.notification){
-                this.notificationOut.writeObject(arg);
-                this.notificationOut.flush();
-            }
-        }catch(IOException e){
-        }
     }
 }
