@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="tppd:Client" />
+      <artifact name="tppd:Server" />
+    </artifacts-to-build>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="41579cf4-8105-4711-a0e2-8e021708f7ed" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/tppd/src/Client/ClientMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/tppd/src/Client/ClientMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Client/ClienteComm.java" beforeDir="false" afterPath="$PROJECT_DIR$/tppd/src/Client/ClienteComm.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Client/EnviaFicheiroThread.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Client/RecebeFicheiroThread.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Client/TransfereThread.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Client/TransferenciaFicheiros.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Dados/Canal.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Dados/Database.java" beforeDir="false" afterPath="$PROJECT_DIR$/tppd/src/Dados/Database.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Dados/Ficheiro.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Dados/FileRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Dados/Request.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Server/InteracaoDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/tppd/src/Server/InteracaoDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Server/MulticastKeepAlive.java" beforeDir="false" afterPath="$PROJECT_DIR$/tppd/src/Server/MulticastKeepAlive.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/tppd/src/Server/Server.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Server/ServerMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/tppd/src/Server/ServerMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tppd/src/Server/TCPClientHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/tppd/src/Server/TCPClientHandler.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedIndex" value="1" />
+  </component>
+  <component name="ProjectId" id="1lZJfMK8FWCSzGTymQuord1RliO" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/tppd" />
+    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ricar\OneDrive\Ambiente de Trabalho\3ano\AM\TPSUDOKU\tppd\tppd\src\Client" />
+      <recent name="C:\Users\ricar\OneDrive\Ambiente de Trabalho\3ano\AM\TPSUDOKU\tppd\tppd\src\Dados" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="Dados" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.ServerMain">
+    <configuration name="Cli2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Client.ClientMain" />
+      <module name="tppd" />
+      <option name="PROGRAM_PARAMETERS" value="127.0.0.1 2025" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Cli3" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Client.ClientMain" />
+      <module name="tppd" />
+      <option name="PROGRAM_PARAMETERS" value="127.0.0.1 2025" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClientMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Client.ClientMain" />
+      <module name="tppd" />
+      <option name="PROGRAM_PARAMETERS" value="127.0.0.1 2025" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Client.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ServerMain" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Server.ServerMain" />
+      <module name="tppd" />
+      <option name="PROGRAM_PARAMETERS" value="2025 2027 127.0.0.1" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Server.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="obs" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="Server.GetServiceObserver" />
+      <module name="tppd" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.Cli2" />
+      <item itemvalue="Application.Cli3" />
+      <item itemvalue="Application.obs" />
+      <item itemvalue="Application.ServerMain" />
+      <item itemvalue="Application.ClientMain" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.ServerMain" />
+        <item itemvalue="Application.ClientMain" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="41579cf4-8105-4711-a0e2-8e021708f7ed" name="Default Changelist" comment="" />
+      <created>1607798782695</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1607798782695</updated>
+      <workItem from="1610213542467" duration="2404000" />
+      <workItem from="1610299169564" duration="1357000" />
+      <workItem from="1610309686037" duration="2696000" />
+      <workItem from="1610314178883" duration="8570000" />
+      <workItem from="1610386091738" duration="10499000" />
+      <workItem from="1610401321861" duration="9000" />
+    </task>
+    <task id="LOCAL-00001" summary="cli">
+      <created>1607801755694</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1607801755694</updated>
+    </task>
+    <task id="LOCAL-00002" summary="cli">
+      <created>1607815685781</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1607815685781</updated>
+    </task>
+    <task id="LOCAL-00003" summary="cli">
+      <created>1607815899409</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1607815899409</updated>
+    </task>
+    <task id="LOCAL-00004" summary="cli">
+      <created>1607818252179</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1607818252179</updated>
+    </task>
+    <task id="LOCAL-00005" summary="cli">
+      <created>1607818868643</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1607818868643</updated>
+    </task>
+    <task id="LOCAL-00006" summary="cli">
+      <created>1607819444444</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1607819444444</updated>
+    </task>
+    <task id="LOCAL-00007" summary="cli">
+      <created>1607819487110</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1607819487110</updated>
+    </task>
+    <task id="LOCAL-00008" summary="cli">
+      <created>1607821002316</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1607821002316</updated>
+    </task>
+    <task id="LOCAL-00009" summary="cli">
+      <created>1607863014181</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1607863014181</updated>
+    </task>
+    <task id="LOCAL-00010" summary="cli">
+      <created>1607865332437</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1607865332437</updated>
+    </task>
+    <task id="LOCAL-00011" summary="cli">
+      <created>1607880872077</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1607880872077</updated>
+    </task>
+    <task id="LOCAL-00012" summary="cli">
+      <created>1607883983298</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1607883983298</updated>
+    </task>
+    <task id="LOCAL-00013" summary="cli">
+      <created>1607891034373</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1607891034373</updated>
+    </task>
+    <task id="LOCAL-00014" summary="cli">
+      <created>1607900852423</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1607900852423</updated>
+    </task>
+    <task id="LOCAL-00015" summary="cli">
+      <created>1607912358571</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1607912358571</updated>
+    </task>
+    <task id="LOCAL-00016" summary="cli">
+      <created>1607914249458</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1607914249458</updated>
+    </task>
+    <task id="LOCAL-00017" summary="cli">
+      <created>1607917646295</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1607917646295</updated>
+    </task>
+    <task id="LOCAL-00018" summary="cli">
+      <created>1607919697997</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1607919697997</updated>
+    </task>
+    <task id="LOCAL-00019" summary="cli">
+      <created>1607922357066</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1607922357066</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="cli" />
+    <option name="LAST_COMMIT_MESSAGE" value="cli" />
+  </component>
+</project>
