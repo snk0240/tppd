@@ -19,18 +19,15 @@ public class ClienteComm extends Thread {
     private ObjectInputStream oin;
     private ObjectOutputStream oout;
 
-    private TransfereThread transfere;
-    private TransferenciaFicheiros transferenciaFicheiros;
     boolean autenticado = false;
     private Database database;
     Utilizador utilizador;
 
     private byte[] data2 = new byte[1024];
 
-    public ClienteComm(InetAddress ip, int udp, TransferenciaFicheiros transferencia){
+    public ClienteComm(InetAddress ip, int udp){
         this.ip_server = ip;
         this.udp_port_server = udp;
-        this.transferenciaFicheiros = transferencia;
     }
 
     @Override
@@ -106,6 +103,16 @@ public class ClienteComm extends Thread {
         }
     }
 
+
+    public void enviamensagemTodos(Msgt msg){
+        try {
+            this.oout.writeObject(msg);
+            this.oout.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public Utilizador getUtilizador(){
         return this.utilizador;
     }
@@ -136,16 +143,6 @@ public class ClienteComm extends Thread {
             if (database.getMsgs().size() > 0)
                 for (int i = 0; i < database.getMsgs().size(); i++) {
                     System.out.print(database.getMsgs().get(i) + "; ");
-                }
-            System.out.println("canais: \r");
-            if (database.getCanais().size() > 0)
-                for (int i = 0; i < database.getCanais().size(); i++) {
-                    System.out.print(database.getCanais().get(i) + "; ");
-                }
-            System.out.println("ficheiros: \r");
-            if (database.getFicheiros().size() > 0)
-                for (int i = 0; i < database.getFicheiros().size(); i++) {
-                    System.out.print(database.getFicheiros().get(i) + "; ");
                 }
             System.out.println("msgs: \r");
             if (database.getMsgs().size() > 0)
@@ -182,26 +179,12 @@ public class ClienteComm extends Thread {
         this.tcp_port_server = tcp_port_server;
     }
 
-    public TransferenciaFicheiros getTransferenciaFicheiros() {
-        return this.transferenciaFicheiros;
-    }
-
-    public void setTransferenciaFicheiros(TransferenciaFicheiros transferenciaFicheiros) {
-        this.transferenciaFicheiros = transferenciaFicheiros;
-    }
-
     public boolean isAutenticado() {
         return this.autenticado;
     }
 
     public void setAutenticado(boolean autenticado) {
         this.autenticado = autenticado;
-    }
-
-    public void comecaDownloadsThread(){
-        transfere = new TransfereThread(utilizador.getPortoTCP(),this);
-        transfere.setDaemon(true);
-        transfere.start();
     }
 
     public void setDatabase(Database d) {
@@ -228,11 +211,6 @@ public class ClienteComm extends Thread {
                             System.out.println("A base de dados foi atualizada\n");
                             oout.writeObject(new String("Database Update"));
                         }
-                    } else if (obj instanceof Request) {
-                        Request request = (Request) obj;
-                        //EnviaFicheiroThread enviaFicheiroThread = new EnviaFicheiroThread(request,);
-                        //enviaFicheiroThread.setDaemon(true);
-                        //enviaFicheiroThread.start();
                     } else if(obj instanceof Boolean)
                     {
                         if((Boolean)obj)

@@ -22,7 +22,6 @@ public class MulticastKeepAlive extends Thread {
 
     @Override
     public void run() {
-
         while (this.isAlive) {
             try {
                 this.packet = new DatagramPacket(new byte[MAX_SIZE], MAX_SIZE, InetAddress.getByName("230.0.0.0"), 5432);

@@ -1,6 +1,5 @@
 package Server;
 
-import Dados.Ficheiro;
 import Dados.Utilizador;
 
 import java.net.InetAddress;
@@ -247,24 +246,6 @@ public class InteracaoDatabase {
             System.out.println(e);
         }
         return 0;
-    }
-
-    public Ficheiro getFileInfo(String username) {
-        this.query = "SELECT * FROM "+DB_NAME+".ficheiro WHERE username ='" + username + "'";
-        List<String> ficheiros = new ArrayList<>();
-        try {
-            this.statement = this.connection.createStatement();
-            this.rs = this.statement.executeQuery(query);
-            Ficheiro f = new Ficheiro();
-            while (this.rs.next()) {
-                f.setNome(this.rs.getString("nome"));
-                f.setTamanho(this.rs.getLong("tamanho"));
-            }
-            return f;
-        } catch (Exception e) {
-            System.err.println(e);
-        }
-        return null;
     }
 
     public Utilizador login(String username, String password,String ip){

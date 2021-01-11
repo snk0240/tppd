@@ -1,25 +1,53 @@
 package Client;
 
-import Dados.Database;
-import Dados.Login;
-import Dados.Msg;
-import Dados.Utilizador;
+import Dados.*;
+import Server.GetServiceObserverInterface;
+import Server.ServerServiceInterface;
 
 import java.net.*;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class ClientMain {
+public class ClientMain extends UnicastRemoteObject implements ClientInterface{
 
     private ClienteComm cli;
-    private TransferenciaFicheiros transferenciaFicheiros;
     private Login login;
+    private String ip;
     private Database database = new Database();
 
-    ClientMain(ClienteComm cli, TransferenciaFicheiros transferenciaFicheiros){
+    String objectUrl;
+
+    ServerServiceInterface remoteServerService;
+    static ClientMain clim = null;
+
+    ClientMain(ClienteComm cli, String ip) throws RemoteException {
         this.cli = cli;
-        this.transferenciaFicheiros = transferenciaFicheiros;
         this.login = new Login();
+        objectUrl = "rmi://"+ip+"/GetRemoveService";
+    }
+
+    public Msgt getmensagem2(){
+        Scanner scanner = new Scanner(System.in);
+        Msgt msg = new Msgt();
+        String destino,mensagem;
+        msg.setEnvia(cli.getUtilizador().getUsername());
+        try {
+            System.out.println("Indique o utilizador para o qual quer enviar mensagem:\n");
+            destino = scanner.nextLine();
+            System.out.println("Escreva a mensagem:\n");
+            mensagem= scanner.nextLine();
+            msg.setRecebe(destino);
+            msg.setTexto(mensagem);
+        } catch (InputMismatchException e){
+            System.out.println("Gerou um erro a declarar os portos.");
+        } catch (Exception e){
+            System.out.println("Gerou um erro a declarar qualquer coisa.");
+        }
+        return msg;
     }
 
     public Msg getmensagem(){
@@ -100,95 +128,144 @@ public class ClientMain {
         return util;
     }
 
-    public void comeca()
-    {
+    public void comeca(){
         Scanner scan1 = new Scanner(System.in);
         int escolha;
-        do {
-            System.out.println("Selecione uma das opções:\n" +
-                    "1-Login\n" +
-                    "2-Registar\n" +
-                    "3-Sair\n> ");
-            escolha = scan1.nextInt();
-            switch (escolha) {
-                case 1:
-                    this.cli.login(fazlogin());
-                    if(this.cli.autenticado)
-                        System.out.println("Utilizador autenticado com sucesso!\n");
-                    else
-                        break;
-                case 2:
-                    this.cli.registo(regista());
-                    if(this.cli.isAutenticado())
-                        System.out.println("Utilizador registado com sucesso!\n");
-                    else
-                        break;
-                case 3:
-                    if(this.cli.autenticado)
-                        this.cli.sai();
-                    System.exit(0);
-            }
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }while(!this.cli.autenticado);
+        try {
+            remoteServerService = (ServerServiceInterface) Naming.lookup(objectUrl);
 
-        boolean sair = false;
-        do
-        {
-            Scanner scan2 = new Scanner(System.in);
-            System.out.println("Selecione uma das opções:\n" +
-                    "1-Enviar Mensagem\n" +
-                    "2-Listar Utilizadores\n" +
-                    "3-Listar Ficheiros\n" +
-                    "4-Escolher ficheiro para download\n" +
-                    "5-Atualizar base de dados com nova informação\n" +
-                    "6-Obter database\n" +
-                    "7-Mostrar Database\n" +
-                    "8-sair");
-            escolha = scan2.nextInt();
-            switch(escolha) {
-                case 1:
-                    cli.enviamensagem(getmensagem());
-                    break;
-                case 2:
-                    cli.listautilizadores();
-                    break;
-                case 3:
-                    //cli.listaficheiros();
-                    break;
-                case 4:
-                    //cli.downloadficheiro(escolheficheiro());
-                    break;
-                case 5:
-                    //cli.updateDatabase();
-                    break;
-                case 6:
-                    cli.getDatabase();
-                    break;
-                case 7:
-                    cli.mostraDatabase();
-                    break;
-                case 8:
-                    System.exit(0);
-                    break;
-            }
-        }while(!sair);
+            do {
+                System.out.println("Selecione uma das opções:\n" +
+                        "1-Login\n" +
+                        "2-Registar\n" +
+                        "3-Sair\n" +
+                        "4-Registar> ");
+                escolha = scan1.nextInt();
+                switch (escolha) {
+                    case 1:
+                        this.cli.login(fazlogin());
+                        if(this.cli.autenticado)
+                            System.out.println("Utilizador autenticado com sucesso!\n");
+                        else
+                            break;
+                    case 2:
+                        this.cli.registo(regista());
+                        if(this.cli.isAutenticado())
+                            System.out.println("Utilizador registado com sucesso!\n");
+                        else
+                            break;
+                    case 3:
+                        if(this.cli.autenticado)
+                            this.cli.sai();
+                        System.exit(0);
+                    case 4:
+                        if(remoteServerService.registaUserRmi(regista(), clim)){
+                            System.out.println("User registado com sucesso.");
+                        }else {
+                            System.out.println("User registado sem sucesso.");
+                        }
+                        break;
+                }
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }while(!this.cli.autenticado);
+
+            boolean sair = false;
+            do
+            {
+                Scanner scan2 = new Scanner(System.in);
+                System.out.println("Selecione uma das opções:\n" +
+                        "1-Enviar Mensagem\n" +
+                        "2-Listar Utilizadores\n" +
+                        "3-Listar Ficheiros\n" +
+                        "4-Escolher ficheiro para download\n" +
+                        "5-Atualizar base de dados com nova informação\n" +
+                        "6-Obter database\n" +
+                        "7-Mostrar Database\n" +
+                        "8-sair\n" +
+                        "9-Msg para Todos");
+                escolha = scan2.nextInt();
+                switch(escolha) {
+                    case 1:
+                        cli.enviamensagem(getmensagem());
+                        break;
+                    case 2:
+                        cli.listautilizadores();
+                        break;
+                    case 3:
+                        //cli.listaficheiros();
+                        break;
+                    case 4:
+                        //cli.downloadficheiro(escolheficheiro());
+                        break;
+                    case 5:
+                        //cli.updateDatabase();
+                        break;
+                    case 6:
+                        cli.getDatabase();
+                        break;
+                    case 7:
+                        cli.mostraDatabase();
+                        break;
+                    case 8:
+                        System.exit(0);
+                        break;
+                    case 9:
+                        if(remoteServerService.enviaMsgTodosRmi(getmensagem2(),clim)){
+                            System.out.println("Msg enviada com sucesso.");
+                        }else {
+                            System.out.println("Msg enviada sem sucesso.");
+                        }
+                        break;
+                }
+            }while(!sair);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void main(String[] args) throws UnknownHostException {
+    public static void main(String[] args) throws UnknownHostException, RemoteException, MalformedURLException, NotBoundException {
+        GetServiceObserverInterface remoteFileService;
+
         if(args.length != 2){
             System.err.println("Sintaxe: java Client <IP_SERVIDOR> <UDP_PORT_SERVIDOR>");
             return;
         } System.out.println("Server IP is "+args[0]+" and Server UDP Port is " + args[1] + "\n");
 
-        TransferenciaFicheiros transferenciaFicheiros = new TransferenciaFicheiros();
-        ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]), Integer.parseInt(args[1]), transferenciaFicheiros);
+        ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
         cli.start();
+
         //COMECA O MENU DO CLIENTE
-        ClientMain cli_main = new ClientMain(cli, transferenciaFicheiros);
-        cli_main.comeca();
+        clim = new ClientMain(cli, args[0]);
+        clim.comeca();
+    }
+
+    @Override
+    public boolean registaruser(Utilizador user) throws RemoteException {
+        try {
+            cli.registo(user);
+        } catch (Exception e) {
+            System.out.println("Excepcao ao registar user: " + e);
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean enviaMsgTodos(Msgt msg) throws RemoteException {
+        try {
+            cli.enviamensagemTodos(msg);
+        } catch (Exception e) {
+            System.out.println("Excepcao ao enviar msg: " + e);
+            return false;
+        }
+        return true;
     }
 }

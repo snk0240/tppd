@@ -1,5 +1,6 @@
 package Server;
 
+import Client.ClientMain;
 import Dados.*;
 
 import java.io.ByteArrayOutputStream;
@@ -9,6 +10,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,18 +55,18 @@ public class Server {
         }
     }
 
-    public Boolean registaUtilizador(Utilizador utilizador) {
+    public Utilizador registaUtilizador(Utilizador utilizador) {
 
         if(this.db.isRegistered(utilizador.getUsername())){
-            return false;
+            return null;
         }
         this.db.register(utilizador);
 
         this.users.add(utilizador.getUsername());
-        return true;
+        return utilizador;
     }
 
-    public Utilizador ExecutaLogin(Login login, String ip){
+    public Utilizador ExecutaLogin(Login login, String ip) throws RemoteException{
         if(db.isConnected(login.getUsername())){
             return null;
         }
@@ -82,7 +86,7 @@ public class Server {
         return null;
     }
 
-    public Boolean ForwardMensagem(Msg msg){
+    public Boolean ForwardMensagem(Msg msg) throws RemoteException{
         Socket source,dest;
         if(users.contains(msg.getRecebe())){ // verifica se está no servidor
             dest = mapSockets.get(msg.getRecebe()).getSocket();
@@ -122,50 +126,12 @@ public class Server {
     public Database getDatabase(){
         Database database = new Database();
         database.setUsers(this.db.getConnectedUsers());
-        Map<String,List<Ficheiro>> ficheiros = new HashMap<>();
-        Map<String,List<Canal>> canais = new HashMap<>();
         Map<String,List<Msg>> msgs = new HashMap<>();
         for(String user : database.getUsers()){
-            ficheiros.put(user,getUserFiles(user));
-            canais.put(user,getUserChannels(user));
             msgs.put(user,getUserMsgs(user));
         }
-        database.setCanais(canais);
-        database.setFicheiros(ficheiros);
         database.setMsgs(msgs);
         return database;
-    }
-
-    public List<Ficheiro> getUserFiles(String user){
-        Map<String,Long> mapa = db.getUserFiles(user);
-        List<Ficheiro> list = new ArrayList<>();
-        List<String> strings = new ArrayList<>();
-        strings.addAll(mapa.keySet());
-        List<Long> values = new ArrayList<>();
-        values.addAll(mapa.values());
-        for(int i=0;i<strings.size();i++){
-            Ficheiro f = new Ficheiro();
-            f.setNome(strings.get(i));
-            f.setTamanho(values.get(i));
-            list.add(f);
-        }
-        return list;
-    }
-
-    public List<Canal> getUserChannels(String user){
-        Map<String,String> mapa = db.getUserChannels(user);
-        List<Canal> list = new ArrayList<>();
-        List<String> strings = new ArrayList<>();
-        strings.addAll(mapa.keySet());
-        List<String> values = new ArrayList<>();
-        values.addAll(mapa.values());
-        for(int i=0;i<strings.size();i++){
-            Canal c = new Canal();
-            c.setNome(strings.get(i));
-            c.setPassword(values.get(i));
-            list.add(c);
-        }
-        return list;
     }
 
     public List<Msg> getUserMsgs(String user){

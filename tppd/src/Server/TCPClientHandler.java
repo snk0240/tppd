@@ -1,9 +1,6 @@
 package Server;
 
-import Dados.Login;
-import Dados.Msg;
-import Dados.Streams;
-import Dados.Utilizador;
+import Dados.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,8 +9,6 @@ import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 import java.net.Socket;
-import java.util.Observable;
-import java.util.Observer;
 
 public class TCPClientHandler extends Thread {
     private final Socket s;
@@ -60,11 +55,11 @@ public class TCPClientHandler extends Thread {
                 received = this.in.readObject();
 
                 if(received instanceof Utilizador){
-                    registo = this.servidor.registaUtilizador((Utilizador)received);
+                    login = this.servidor.registaUtilizador((Utilizador)received);
                     System.out.println(((Utilizador) received).toDB());
-                    this.out.writeObject(registo);
+                    this.out.writeObject((Utilizador)login);
                     this.out.flush();
-                    if(registo == true){
+                    if(login != null){
                         user = ((Utilizador) received).getUsername();
                         this.servidor.getMapSockets().put(user, this.streams);
                     }
@@ -112,6 +107,26 @@ public class TCPClientHandler extends Thread {
 
                     this.multicastSocket.send(this.packet);
                 }
+
+                //enviar mensagem para todos os users do server
+                //mudar rmi
+                else if(received instanceof Msgt){
+                    Msg msg = (Msg)received;
+                    System.out.println("recebi msg: "+msg.getTexto()+" "+msg.getEnvia()+" "+msg.getRecebe());
+                    System.out.println("A encaminhar msg");
+                    mensagem = this.servidor.ForwardMensagem(msg);
+                    this.out.writeObject(mensagem);
+                    this.out.flush();
+
+                    this.buff = new ByteArrayOutputStream();
+                    this.out = new ObjectOutputStream(this.buff);
+                    this.out.writeObject(msg);
+
+                    this.packet.setData(this.buff.toByteArray());
+
+                    this.multicastSocket.send(this.packet);
+                }
+
                 else {
                 }
             }catch(Exception e){
