@@ -7,7 +7,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
-public class GetServiceObserver extends UnicastRemoteObject implements Remote {
+public class GetServiceObserver extends UnicastRemoteObject implements GetServiceObserverInterface {
     public GetServiceObserver() throws RemoteException {}
 
     public void notifyNewOperationConcluded(String description) throws RemoteException
