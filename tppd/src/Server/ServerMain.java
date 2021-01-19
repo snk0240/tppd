@@ -13,8 +13,6 @@ import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
-
 
 public class ServerMain extends UnicastRemoteObject implements ServerServiceInterface{
 
@@ -34,72 +32,46 @@ public class ServerMain extends UnicastRemoteObject implements ServerServiceInte
 
     @Override
     public boolean registaUserRmi(Utilizador utilizador, ClientMain cli) throws RemoteException {
-        try{
+        if(servidor1.registaUtilizador(utilizador) != null){
+            System.out.print("Surgiu um problema ao tentar registar o user!");
 
-            boolean conseguiu = cli.registaruser(utilizador);
-            if(conseguiu=false){
-                System.out.print("Surgiu um problema ao tentar registar o user!");
-
-                notifyObservers("Surgiu um problema na autenticacao do user!");
-                try{
-                    notifyObservers(" num cliente em " + getClientHost());
-                }catch(ServerNotActiveException ex){}
-                notifyObservers(".\n\n");
-
-                return false;
-            }
-            notifyObservers("Utilizador registado com sucesso");
+            notifyObservers("Surgiu um problema na autenticacao do user!");
             try{
                 notifyObservers(" num cliente em " + getClientHost());
-            }catch(ServerNotActiveException e){}
-            notifyObservers(".\n\n");
-
-            return true;
-
-        } catch(IOException e){
-            System.out.println("Ocorreu a excepcao de E/S: \n\t" + e);
-
-            notifyObservers("Ocorreu um problema ao registar o user");
-            try{
-                notifyObservers(" por um cliente em " + getClientHost());
             }catch(ServerNotActiveException ex){}
             notifyObservers(".\n\n");
+
+            return false;
         }
-        return false;
+        notifyObservers("Utilizador registado com sucesso");
+        try{
+            notifyObservers(" num cliente em " + getClientHost());
+        }catch(ServerNotActiveException e){}
+        notifyObservers(".\n\n");
+
+        return true;
     }
 
     @Override
     public boolean enviaMsgTodosRmi(Msgt msg, ClientMain cli) throws RemoteException {
-        try{
-            if(cli.enviaMsgTodos(msg)!=false){
-                System.out.print("Surgiu um problema ao tentar enviar msg!");
+        if(!servidor1.ForwardMensagem2(msg)){
+            System.out.print("Surgiu um problema ao tentar enviar msg!");
 
-                notifyObservers("Surgiu um problema no envio da msg!");
-                try{
-                    notifyObservers(" num cliente em " + getClientHost());
-                }catch(ServerNotActiveException ex){}
-                notifyObservers(".\n\n");
-
-                return false;
-            }
-            notifyObservers("Mensagem enviada com sucesso");
+            notifyObservers("Surgiu um problema no envio da msg!");
             try{
                 notifyObservers(" num cliente em " + getClientHost());
-            }catch(ServerNotActiveException e){}
-            notifyObservers(".\n\n");
-
-            return true;
-
-        } catch(IOException e){
-            System.out.println("Ocorreu a excepcao de E/S: \n\t" + e);
-
-            notifyObservers("Ocorreu um problema ao enviar mensagem");
-            try{
-                notifyObservers(" por um cliente em " + getClientHost());
             }catch(ServerNotActiveException ex){}
             notifyObservers(".\n\n");
+
+            return false;
         }
-        return false;
+        notifyObservers("Mensagem enviada com sucesso");
+        try{
+            notifyObservers(" num cliente em " + getClientHost());
+        }catch(ServerNotActiveException e){}
+        notifyObservers(".\n\n");
+
+        return true;
     }
 
     @Override
@@ -171,20 +143,9 @@ public class ServerMain extends UnicastRemoteObject implements ServerServiceInte
 
                 System.out.println("Servico GetRemoteFile criado e em execucao ("+fileService.getRef().remoteToString()+"...");
 
-                /*
-                 * Regista o servico no rmiregistry local para que os clientes possam localiza'-lo, ou seja,
-                 * obter a sua referencia remota (endereco IP, porto de escuta, etc.).
-                 */
-
                 r.bind(SERVICE_NAME, fileService);
 
                 System.out.println("Servico " + SERVICE_NAME + " registado no registry...");
-
-                /*
-                 * Para terminar um servico RMI do tipo UnicastRemoteObject:
-                 *
-                 *  UnicastRemoteObject.unexportObject(fileService, true);
-                 */
 
             }catch(RemoteException e){
                 System.out.println("Erro remoto - " + e);

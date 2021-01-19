@@ -85,8 +85,13 @@ public class Server {
         }
         return null;
     }
+    public Boolean ForwardMensagem2(Msgt msg) throws RemoteException{
+        //codigo para enviar a mensagem recebida para todos os utilizadores ligados a este servidor
+        return true;
+    }
 
-    public Boolean ForwardMensagem(Msg msg) throws RemoteException{
+
+    public Boolean ForwardMensagem(Msg msg){
         Socket source,dest;
         if(users.contains(msg.getRecebe())){ // verifica se está no servidor
             dest = mapSockets.get(msg.getRecebe()).getSocket();

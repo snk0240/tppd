@@ -1,7 +1,6 @@
 package Client;
 
 import Dados.*;
-import Server.GetServiceObserverInterface;
 import Server.ServerServiceInterface;
 
 import java.net.*;
@@ -14,15 +13,11 @@ import java.util.Scanner;
 
 public class ClientMain extends UnicastRemoteObject implements ClientInterface{
 
-    private ClienteComm cli;
-    private static Login login;
+    private static Login login = null;
 
-    ClientMain(ClienteComm cli) throws RemoteException {
-        this.cli = cli;
-        this.login = new Login();
-    }
+    ClientMain() throws RemoteException{    }
 
-    public static void main(String[] args) throws UnknownHostException, RemoteException, MalformedURLException, NotBoundException {
+    public static void main(String[] args) throws UnknownHostException, RemoteException {
         ServerServiceInterface remoteFileService;
         ClientMain clim = null;
 
@@ -33,24 +28,26 @@ public class ClientMain extends UnicastRemoteObject implements ClientInterface{
             return;
         } System.out.println("Server IP is "+args[0]+" and Server UDP Port is " + args[1] + "\n");
 
-        objectUrl = "rmi://" + args[0] + "/GetRemoteService";
-        remoteFileService = (ServerServiceInterface) Naming.lookup(objectUrl);
+        objectUrl = "rmi://"+args[0]+"/GetRemoteService";
 
-        ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
-        cli.start();
-
-        //COMECA O MENU DO CLIENTE
-        clim = new ClientMain(cli);
-        Scanner scan1 = new Scanner(System.in);
-
-        int escolha;
         try {
+            remoteFileService = (ServerServiceInterface) Naming.lookup(objectUrl);
+
+            ClienteComm cli = new ClienteComm(InetAddress.getByName(args[0]), Integer.parseInt(args[1]));
+            cli.start();
+
+            //COMECA O MENU DO CLIENTE
+            clim = new ClientMain();
+            Scanner scan1 = new Scanner(System.in);
+
+            int escolha;
+
             do {
                 System.out.println("Selecione uma das opções:\n" +
                         "1-Login\n" +
                         "2-Registar\n" +
                         "3-Sair\n" +
-                        "4-Registar> ");
+                        "4-Registar ");
                 escolha = scan1.nextInt();
                 switch (escolha) {
                     case 1:
@@ -136,29 +133,11 @@ public class ClientMain extends UnicastRemoteObject implements ClientInterface{
             }while(!sair);
         } catch (RemoteException e) {
             e.printStackTrace();
+        } catch (NotBoundException e) {
+            e.printStackTrace();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
         }
-    }
-
-    @Override
-    public boolean registaruser(Utilizador user) throws RemoteException {
-        try {
-            cli.registo(user);
-        } catch (Exception e) {
-            System.out.println("Excepcao ao registar user: " + e);
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public boolean enviaMsgTodos(Msgt msg) throws RemoteException {
-        try {
-            cli.enviamensagemTodos(msg);
-        } catch (Exception e) {
-            System.out.println("Excepcao ao enviar msg: " + e);
-            return false;
-        }
-        return true;
     }
 
     public static Msgt getmensagem2(ClienteComm cli){
@@ -253,5 +232,15 @@ public class ClientMain extends UnicastRemoteObject implements ClientInterface{
         util.setAtivo(true);
 
         return util;
+    }
+
+    @Override
+    public boolean registaruser(Utilizador user) throws RemoteException {
+        return false;
+    }
+
+    @Override
+    public boolean enviaMsgTodos(Msgt msg) throws RemoteException {
+        return false;
     }
 }

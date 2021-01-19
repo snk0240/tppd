@@ -7,7 +7,6 @@ public class Msgt implements Serializable {
 
     private String texto;
     private String envia;
-    private String recebe;
     private int id_channel;
     private int id_ficheiro;
     private String username;
@@ -18,7 +17,6 @@ public class Msgt implements Serializable {
     public Msgt(String texto, String envia, String recebe, int id_1, int id_2, String user){
         this.texto=texto;//texto com mensagem
         this.envia=envia;//ip do que enviou
-        this.recebe=recebe;//ip do que vai receber
         this.id_channel=id_1;//-1 se for publico, id do canal se for para um canal
         this.id_ficheiro=id_2;//-1 se nao for ficheiro, id do ficheiro se for ficheiro
         this.username=user;//username que enviou a mensagem
@@ -38,14 +36,6 @@ public class Msgt implements Serializable {
 
     public void setEnvia(String envia) {
         this.envia = envia;
-    }
-
-    public String getRecebe() {
-        return recebe;
-    }
-
-    public void setRecebe(String recebe) {
-        this.recebe = recebe;
     }
 
     public int getId_channel() {
